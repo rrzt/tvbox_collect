@@ -995,7 +995,7 @@ while true; do
         10) change_dir    && require_pause=false ;;
         11) deep_clean    && require_pause=false ;;
         12) manage_stash ;;
-        13) do_one_click  && require_pause=false ;;
+        13) do_one_click ;;
         14) undo_changes ;;
         15) git_config ;;
         16) clone_repo ;;

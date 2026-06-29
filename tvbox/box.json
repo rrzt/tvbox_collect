@@ -50,8 +50,126 @@
 			"api": "./py/枫叶影院.py"
 		},
 		{
+			"key": "wv_3q",
+			"name": "wv | 3Q影视",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/3Q影视.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_ddys",
+			"name": "wv | 低端影视",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/低端影视.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_jldj",
+			"name": "wv | 锦鲤短剧",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/锦鲤短剧.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_xhjw",
+			"name": "wv | 新韩剧网",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/新韩剧网.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_jqqzx",
+			"name": "wv | 剧圈圈",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/剧圈圈.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_jddzx",
+			"name": "wv | 剧多多",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/剧多多.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_aizju",
+			"name": "wv | 爱追剧",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/爱追剧.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_555ys",
+			"name": "wv | 555影视",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/555影视.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_fktv",
+			"name": "wv | 快点播",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/快点播.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_xlys",
+			"name": "wv | 修罗影视",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/修罗影视.js",
+			"searchable": 1,
+			"filterable": 1,
+			"switchable": 1
+		},
+		{
+			"key": "wv_ysp",
+			"name": "wv | 央视直播",
+			"api": "csp_WvSpider",
+			"jar": "./jar/WvSpider.jar",
+			"type": "3",
+			"ext": "./js/央视频.js"
+		},
+		{
 			"key": "1",
-			"name": "== 1 =="
+			"name": "--- 1 ---"
 		},
 		{
 			"key": "小苹果",
@@ -107,7 +225,7 @@
 		},
 		{
 			"key": "2",
-			"name": "== 2 =="
+			"name": "--- 2 ---"
 		},
 		{
 			"key": "白嫖2",
@@ -136,7 +254,7 @@
 		},
 		{
 			"key": "3",
-			"name": "== 3 =="
+			"name": "--- 3 ---"
 		},
 		{
 			"key": "py_高清电影",
@@ -277,11 +395,11 @@
 		},
 		{
 			"key": "3.1",
-			"name": "== 3.1 =="
+			"name": "--- 3.1 ---"
 		},
 		{
 			"key": "4",
-			"name": "== 4 =="
+			"name": "--- 4 ---"
 		},
 		{
 			"key": "飞快影视",
@@ -412,7 +530,7 @@
 		},
 		{
 			"key": "5",
-			"name": "== 5 =="
+			"name": "--- 5 ---"
 		},
 		{
 			"key": "360资源",
@@ -558,7 +676,7 @@
 		},
 		{
 			"key": "6",
-			"name": "== 6 =="
+			"name": "--- 6 ---"
 		},
 		{
 			"key": "py_YYMP3",
@@ -587,7 +705,7 @@
 		},
 		{
 			"key": "7",
-			"name": "== 7 =="
+			"name": "--- 7 ---"
 		},
 		{
 			"key": "MXDM",
@@ -616,7 +734,7 @@
 		},
 		{
 			"key": "8",
-			"name": "== 8 =="
+			"name": "--- 8 ---"
 		}
 	],
 	"lives": [
