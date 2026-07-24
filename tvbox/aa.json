@@ -89,13 +89,6 @@
    "filterable": 1
   },
   {
-   "key": "Nostr",
-   "name": "Nostr 推荐",
-   "type": 3,
-   "api": "csp_Nostr",
-   "homePage": "./nostr.html"
-  },
-  {
    "key": "油管webjar",
    "name": "油管网页2",
    "type": 3,

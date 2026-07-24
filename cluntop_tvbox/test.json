@@ -1,1 +1,13 @@
-"［］"
+{
+ "sites": [
+  {
+   "key": "爱看",
+   "name": "爱看影视",
+   "type": 3,
+   "api": "csp_XBPQ",
+   "ext": "./js/s/爱看.json"
+  }
+ ],
+ "spider": "./jar/xb.jar",
+ "logo": "./img/pg.gif"
+}

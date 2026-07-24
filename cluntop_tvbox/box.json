@@ -2,7 +2,7 @@
  "sites": [
   {
    "key": "py_douban",
-   "name": "豆瓣 | PY",
+   "name": "豆瓣[py]",
    "type": 3,
    "api": "./py/py_douban.py",
    "searchable": 0,
@@ -11,46 +11,32 @@
   },
   {
    "key": "荐片",
-   "name": "荐片",
+   "name": "荐片[js]",
    "type": 3,
    "api": "./js/荐片.js"
   },
   {
    "key": "apple",
-   "name": "apple",
+   "name": "apple[js]",
    "type": 3,
    "api": "./js/apple.js"
   },
   {
-   "key": "Nostr",
-   "name": "Nostr 推荐",
-   "type": 3,
-   "api": "csp_Nostr",
-   "homePage": "./nostr.html"
-  },
-  {
-   "key": "Nostr2",
-   "name": "Nostr 合集",
-   "type": 3,
-   "api": "csp_Nostr",
-   "homePage": "./lib/index.html"
-  },
-  {
    "key": "金牌影院",
-   "name": "金牌影院",
+   "name": "金牌[js]",
    "type": 3,
    "api": "./js/金牌影院.js"
   },
   {
    "key": "py_枫叶影院",
-   "name": "枫叶影院",
+   "name": "枫叶[js]",
    "type": 3,
    "api": "./py/枫叶影院.py",
    "ext": "noproxy"
   },
   {
    "key": "聚合短剧",
-   "name": "聚合短剧",
+   "name": "聚合短剧[js]",
    "type": 3,
    "api": "./js/聚合短剧.js",
    "style": {
@@ -61,7 +47,7 @@
   },
   {
    "key": "py_红果短剧",
-   "name": "红果短剧",
+   "name": "红果短剧[py]",
    "type": 3,
    "api": "./py/红果短剧.py",
    "ext": "noproxy"
@@ -100,10 +86,24 @@
   },
   {
    "key": "奇优",
-   "name": "奇优影院(没好",
+   "name": "奇优影院",
    "type": 3,
    "api": "csp_XBPQ",
    "ext": "./js/s/奇优.json"
+  },
+  {
+   "key": "面包",
+   "name": "面包影视",
+   "type": 3,
+   "api": "csp_XBPQ",
+   "ext": "./js/s/面包.json"
+  },
+  {
+   "key": "爱看",
+   "name": "爱看影视",
+   "type": 3,
+   "api": "csp_XBPQ",
+   "ext": "./js/s/爱看.json"
   },
   {
    "key": "2",

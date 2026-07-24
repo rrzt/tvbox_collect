@@ -8,13 +8,6 @@
    "ext": "proxy"
   },
   {
-   "key": "Nostr",
-   "name": "Nostr 推荐",
-   "type": 3,
-   "api": "csp_Nostr",
-   "homePage": "./nostr.html"
-  },
-  {
    "key": "py_51吃瓜",
    "name": "51吃瓜",
    "type": 3,

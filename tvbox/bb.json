@@ -37,13 +37,6 @@
    "filterable": 1
   },
   {
-   "key": "Nostr",
-   "name": "Nostr 推荐",
-   "type": 3,
-   "api": "csp_Nostr",
-   "homePage": "./nostr.html"
-  },
-  {
    "key": "哔哩so",
    "name": "哔哩哔哩",
    "type": 3,
