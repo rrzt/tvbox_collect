@@ -378,6 +378,12 @@
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/悦听吧.py"
 		},
 		{
+			"key": "275ts",
+			"name": "🐬275听书.py[听书]",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/275听书.py"
+		},
+		{
 			"key": "kwms",
 			"name": "🐬酷我音乐.py[音乐]",
 			"type": 3,
