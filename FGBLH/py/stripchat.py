@@ -143,9 +143,6 @@ class Spider(Spider):
     VALUE = [
         {'n': '新主播', 'v': 'autoTagNew'},
         {'n': '推荐', 'v': 'recommended'},
-        {'v': 'fuckMachine', 'n': '炮机'},
-        {'n': '青年', 'v': 'ageTeen'},
-        {'n': 'VR', 'v': 'autoTagVr'},
         {'n': '亚洲人', 'v': 'ethnicityAsian'},
         {'n': '🇨🇳中国', 'v': 'tagLanguageChinese'},
         {'n': '🇯🇵日本', 'v': 'tagLanguageJapanese'},
@@ -178,6 +175,9 @@ class Spider(Spider):
         {'n': '印度', 'v': 'ethnicityIndian'},
         {'n': '阿拉伯', 'v': 'ethnicityMiddleEastern'},
         {'n': '黑人', 'v': 'ethnicityEbony'},
+        {'v': 'fuckMachine', 'n': '炮机'},
+        {'n': '青年', 'v': 'ageTeen'},
+        {'n': 'VR', 'v': 'autoTagVr'},
         {'n': '✨新主播', 'v': 'autoTagNew'},
         {'n': 'VR直播', 'v': 'autoTagVr'},
         {'n': '18+', 'v': 'ageTeen'},
@@ -207,9 +207,9 @@ class Spider(Spider):
 
   def _parse_status_remark(self, is_live, status, viewers=0):
     if not is_live or status == 'off':
-      status_text = '⚫ 已下播'
+      status_text = '已下播'
     elif status == 'public':
-      status_text = '🔴 直播中'
+      status_text = '直播中'
     else:
       status_text = '收费房'
 
