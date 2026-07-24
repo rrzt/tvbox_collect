@@ -12,7 +12,7 @@
       "ext": "https://file.icve.com.cn/file_doc/803/892/C8FDF0894D61FA21A937E21135CB9125.aowu"
     },
     {
-      "name": "更新日期:20260721",
+      "name": "更新日期:20260724",
       "key": "Y360",
       "type": 3,
       "api": "csp_Y360Amns",
@@ -26,8 +26,8 @@
       "key": "Hgdh",
       "type": 3,
       "api": "csp_HgdhAmns",
-      "searchable": 0,
-      "quickSearch": 0,
+      "searchable": 1,
+      "quickSearch": 1,
       "changeable": 0,
       "ext": "https://nos.netease.com/ysf/dac0101040005285380ee886e6e6c660.aowu"
     },
@@ -458,8 +458,8 @@
       "key": "DjHggg",
       "type": 3,
       "api": "csp_HgggAmns",
-      "searchable": 1,
-      "quickSearch": 1,
+      "searchable": 0,
+      "quickSearch": 0,
       "changeable": 0,
       "ext": "short_play"
     },
@@ -671,7 +671,7 @@
       "searchable": 0,
       "quickSearch": 0,
       "changeable": 0,
-      "ext": "https://api.bmjb2mk7.com,https://api.46d5umpk.com,https://api.tkfupxqu.com,https://api.5h5hbfhh.com,https://api.qchyzkww.com,https://api.cjxxpgkq.com,https://api.zejzeu7p.com"
+      "ext": "https://api.46d5umpk.com,https://api.tkfupxqu.com,https://api.5h5hbfhh.com,https://api.qchyzkww.com,https://api.cjxxpgkq.com,https://api.zejzeu7p.com"
     },
     {
       "name": "🏆飞球|体育",
