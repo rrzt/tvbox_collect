@@ -18,7 +18,7 @@ jobs:
         curl -X POST "http://2015888.xyz/jiemi/get_jiemi.php" \
           -H "Content-Type: application/x-www-form-urlencoded" \
           -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
-          -d "url=https://xn--v4q818bf34b.cc" \
+          -d "url=http://摸鱼儿.cc" \
           -o tv_config.json
 
     - name: 2. 自动下载最新的真实 jar 并重命名为 moyu.jar
@@ -52,7 +52,7 @@ jobs:
         GITHUB_USER = "woshishiq1"
         GITHUB_REPO = "jiemi"
         
-        BASE_JAR_URL = f"https://down.nigx.cn/https://raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/moyu.jar"
+        BASE_JAR_URL = f"https://down.nigx.cn/raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/moyu.jar"
 
         if not os.path.exists(INPUT_JSON):
             print(f"[-] 未找到源文件 {INPUT_JSON}")
