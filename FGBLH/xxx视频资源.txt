@@ -20,6 +20,9 @@ CCTV16奥林匹克1080p,https://php.jdshipin.com:2096/TVOD/iptv.php?id=cctv16
 广东珠江1080p,http://www.yahao.host:4022/udp/239.77.0.1:5146
 中天新闻,http://173.208.234.146/live/ctinews.m3u8
 
+港台,#genre#
+翡翠台,http://183.62.8.58:50085/tsfile/live/0017_1.m3u8?key=txiptv&playlive=1&authid=0
+
 18+直播台,#genre#
 资源永久免费如有收费的都是骗子,http://ef90a6cd.rossteleccom.net/iptv/2TBC4G2WWDG6RSUSN5SXSQEC/14158/index.m3u8
 俄罗斯极限电影台(免翻),http://ef90a6cd.rossteleccom.net/iptv/2TBC4G2WWDG6RSUSN5SXSQEC/14158/index.m3u8
