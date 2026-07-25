@@ -17,7 +17,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "更新日期:20260724",
+      "name": "更新日期:20260725",
       "key": "Y360",
       "type": 3,
       "api": "csp_Y360Amns",
@@ -35,6 +35,7 @@
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 0,
+      "genre": "shortdrama",
       "ext": "https://nos.netease.com/ysf/dac0101040005285380ee886e6e6c660.aowu",
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
@@ -437,17 +438,6 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "🔗Gaze|2K",
-      "key": "Gaze",
-      "type": 3,
-      "api": "csp_GazeAmns",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0,
-      "ext": "https://gaze.red,https://gazes.store,https://gazes.top,https://gazes.host",
-      "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
-    },
-    {
       "name": "🔗哔嘀|2K",
       "key": "Bidys",
       "type": 3,
@@ -495,6 +485,7 @@
       "quickSearch": 0,
       "changeable": 0,
       "ext": "comic_series",
+      "genre": "shortdrama",
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
@@ -506,6 +497,7 @@
       "quickSearch": 0,
       "changeable": 0,
       "ext": "short_play",
+      "genre": "shortdrama",
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
@@ -769,7 +761,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "🎉Bili|合集",
+      "name": "🎉合集|Bili",
       "key": "BiliHeji",
       "type": 3,
       "api": "csp_BiliAmns",
@@ -788,7 +780,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "🎉Bili|歌曲",
+      "name": "🎉歌曲|Bili",
       "key": "BiliGequ",
       "type": 3,
       "api": "csp_BiliAmns",
@@ -806,7 +798,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "🎉Bili|戏曲",
+      "name": "🎉戏曲|Bili",
       "key": "BiliXiqu",
       "type": 3,
       "api": "csp_BiliAmns",
@@ -824,7 +816,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📚教育|少儿",
+      "name": "📚少儿|教育",
       "key": "BiliSer",
       "type": 3,
       "api": "csp_BiliAmns",
@@ -842,7 +834,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📚教育|小学",
+      "name": "📚小学|教育",
       "key": "BiliXxue",
       "type": 3,
       "api": "csp_BiliAmns",
@@ -860,7 +852,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📚教育|初中",
+      "name": "📚初中|教育",
       "key": "BiliCzong",
       "type": 3,
       "api": "csp_BiliAmns",
@@ -878,7 +870,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📚教育|高中",
+      "name": "📚高中|教育",
       "key": "BiliGzong",
       "type": 3,
       "api": "csp_BiliAmns",
@@ -896,7 +888,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📖听书|富强",
+      "name": "📖富强|听书",
       "key": "TSty",
       "type": 3,
       "api": "csp_TStyAmns",
@@ -906,7 +898,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📖听书|文明",
+      "name": "📖文明|听书",
       "key": "TStzg",
       "type": 3,
       "api": "csp_TStzgAmns",
@@ -927,7 +919,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁本地|播放",
+      "name": "📁本地|我的",
       "key": "MyLocal",
       "type": 3,
       "api": "csp_MyLocalAmns",
@@ -937,7 +929,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|夸夸",
+      "name": "📁夸夸|我的",
       "key": "MyQuark",
       "type": 3,
       "api": "csp_MyQuarkAmns",
@@ -947,7 +939,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|摆渡",
+      "name": "📁摆渡|我的",
       "key": "MyBaidu",
       "type": 3,
       "api": "csp_MyBaiduAmns",
@@ -957,7 +949,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|优汐",
+      "name": "📁优汐|我的",
       "key": "MyUc",
       "type": 3,
       "api": "csp_MyUcAmns",
@@ -967,7 +959,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|光雅",
+      "name": "📁光雅|我的",
       "key": "MyGuangya",
       "type": 3,
       "api": "csp_MyGuangyaAmns",
@@ -977,7 +969,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|阿狸",
+      "name": "📁阿狸|我的",
       "key": "Myali",
       "type": 3,
       "api": "csp_MyaliAmns",
@@ -987,7 +979,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|115",
+      "name": "📁115|我的",
       "key": "My115",
       "type": 3,
       "api": "csp_My115Amns",
@@ -997,7 +989,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|123",
+      "name": "📁123|我的",
       "key": "My123",
       "type": 3,
       "api": "csp_My123Amns",
@@ -1007,7 +999,7 @@
       "jar": "https://down.nigx.cn/raw.githubusercontent.com/woshishiq1/jiemi/main/aowu.png;md5;644caca4dad20841b97f824fc0a58cb4"
     },
     {
-      "name": "📁我的|DIY",
+      "name": "📁DIY|我的",
       "key": "Diyre",
       "type": 3,
       "api": "csp_DiyreAmns",
