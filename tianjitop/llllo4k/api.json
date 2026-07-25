@@ -46,6 +46,19 @@
       "type": 3
     },
 {
+      "key": "不戳",
+      "name": "不戳｜秒播",
+      "type": 3,
+      "api": "csp_AppGet",
+      "searchable": 1,
+      "changeable": 1,
+      "ext": {
+        "url": "https://appcmszbc.zbc4k.app",
+        "dataKey": "pYrEkiWRYhBLTUTC",
+        "dataIv": "pYrEkiWRYhBLTUTC"
+      }
+    },
+{
       "key": "共青春",
       "name": "共青春｜秒播",
       "api": "./py/共青春.py",
@@ -349,13 +362,20 @@
     "filterable": 1
 },
    {
-      "key": "爱影视",
-      "name": "爱影视｜秒播",
-      "type": 3,
-      "jar": "./jars/XM.png",
-      "api": "csp_AppGet",
-      "ext": "https://aysappto.oss-cn-chengdu.aliyuncs.com/q23.txt|nzEqOgYk3QzHuEP8|V122|okhttp/3.10.0"
-    },
+            "key": "爱影",
+            "name": "爱影视｜秒播",
+            "type": 3,
+            "api": "csp_AppQi",
+            "searchable": 1,
+            "changeable": 1,
+            "ext": {
+                "site": "https://aysappto.oss-cn-chengdu.aliyuncs.com/q26.txt",
+                "dataKey": "0UKM8jkasM8tdzgW",
+                "dataIv": "0UKM8jkasM8tdzgW",
+                "init": "initV120",
+                "ua": "okhttp/3.10.0"
+            }
+        },
   {
       "key": "4K影院",
       "name": "光影｜秒播",

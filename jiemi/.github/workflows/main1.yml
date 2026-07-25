@@ -13,7 +13,7 @@ jobs:
     - name: 检出仓库代码
       uses: actions/checkout@v4
 
-    - name: 1. 请求解密接口并保存基础 JSON
+    - name: 1. 请求解密接口并保存基础 JSON (tv_config.json)
       run: |
         curl -X POST "http://2015888.xyz/jiemi/get_jiemi.php" \
           -H "Content-Type: application/x-www-form-urlencoded" \
@@ -38,39 +38,57 @@ jobs:
           exit 1
         fi
 
-    - name: 3. 运行内置 Python 逻辑：注入 sites 并生成最终的 moyu.json
+    - name: 3. 运行内置 Python 逻辑：计算MD5、注入 sites 并生成最终的 moyu.json
       shell: python
       run: |
         import json
         import os
+        import hashlib
 
         INPUT_JSON = "tv_config.json"
         OUTPUT_JSON = "moyu.json"
-        
-        # 你的 GitHub 仓库对应的 moyu.jar 纯净链接（不带 MD5）
-        # 【请注意】：请把下面两行的“你的GitHub用户名”和“你的仓库名”修改为你实际的名称
+        LOCAL_JAR = "moyu.jar"
+
         GITHUB_USER = "woshishiq1"
         GITHUB_REPO = "jiemi"
-        
+
         BASE_JAR_URL = f"https://down.nigx.cn/raw.githubusercontent.com/{GITHUB_USER}/{GITHUB_REPO}/main/moyu.jar"
 
+        # 1. 校验源 JSON 是否存在
         if not os.path.exists(INPUT_JSON):
             print(f"[-] 未找到源文件 {INPUT_JSON}")
             exit(1)
 
+        # 2. 计算本地下载好的 moyu.jar 的 MD5
+        jar_md5 = ""
+        if os.path.exists(LOCAL_JAR):
+            md5_hash = hashlib.md5()
+            with open(LOCAL_JAR, "rb") as f:
+                for chunk in iter(lambda: f.read(8192), b""):
+                    md5_hash.update(chunk)
+            jar_md5 = md5_hash.hexdigest()
+            print(f"[+] 计算出本地 moyu.jar 的 MD5: {jar_md5}")
+        else:
+            print("[!] 未找到本地 moyu.jar，将降级使用无 MD5 模式")
+
+        # 3. 拼接带有 MD5 的完整 JAR URL
+        FINAL_JAR_URL = f"{BASE_JAR_URL};md5;{jar_md5}" if jar_md5 else BASE_JAR_URL
+        print(f"[+] 最终注入的 JAR 链接: {FINAL_JAR_URL}")
+
+        # 4. 解析 JSON 并注入
         with open(INPUT_JSON, "r", encoding="utf-8") as f:
             config_data = json.load(f)
 
-        # A. 顺便把最顶层的顶级 spider 链接也改成你自己的 moyu.jar
-        config_data["spider"] = BASE_JAR_URL
+        # A. 更新顶层的 spider 链接为带有 MD5 的地址
+        config_data["spider"] = FINAL_JAR_URL
         print("[+] 已更新顶级 spider 链接")
 
-        # B. 遍历 sites 列表，无 jar 或 jar 为空的站点自动注入
+        # B. 遍历 sites 列表进行注入
         sites_list = config_data.get("sites", [])
         if isinstance(sites_list, list):
             updated_count = 0
             skipped_count = 0
-            
+
             for site in sites_list:
                 if isinstance(site, dict):
                     site_name = site.get("name", "未知站点")
@@ -81,8 +99,8 @@ jobs:
                         skipped_count += 1
                         continue
 
-                    # 没有 jar 或为空 → 注入你自己的纯净链接
-                    site["jar"] = BASE_JAR_URL
+                    # 没有 jar 或为空 → 注入带 MD5 的链接
+                    site["jar"] = FINAL_JAR_URL
                     updated_count += 1
 
             print(f"[+] Sites 注入完成：更新了 {updated_count} 个站点，跳过了 {skipped_count} 个已有 jar 的站点")
@@ -92,20 +110,21 @@ jobs:
             json.dump(config_data, f, indent=2, ensure_ascii=False)
         print(f"[+] 最终配置文件已成功生成: {OUTPUT_JSON}")
 
-    - name: 4. 强行提交最新的 moyu.json 和 moyu.jar 到仓库
+    - name: 4. 提交最新原版 tv_config.json、修改版 moyu.json 和 moyu.jar 到仓库
       run: |
         git config --local user.email "github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        
-        # 强行添加，确保绕过任何 .gitignore 规则
+
+        # 强行添加全部 3 个关键文件，保证原版配置与修改版同时同步
+        if [ -f "tv_config.json" ]; then git add -f tv_config.json; fi
         if [ -f "moyu.json" ]; then git add -f moyu.json; fi
         if [ -f "moyu.jar" ]; then git add -f moyu.jar; fi
-        
-        # 只要代码、配置或 jar 包有任何风吹草动，Git 都会自动捕捉并更新
+
+        # 只要有任何更新就提交
         if ! git diff --cached --quiet; then
-          git commit -m "自动同步最新moyu.json与moyu.jar: $(date +'%Y-%m-%d %H:%M:%S')"
+          git commit -m "自动同步最新原版配置与moyu文件: $(date +'%Y-%m-%d %H:%M:%S')"
           git push origin HEAD
-          echo "【成功】moyu.json 和 moyu.jar 已成功推送到你的远程仓库！"
+          echo "【成功】tv_config.json、moyu.json 和 moyu.jar 已同步推送到远程仓库！"
         else
           echo "【提示】内容与上一版本完全一致，无需重复提交。"
         fi

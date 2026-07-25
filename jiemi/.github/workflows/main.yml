@@ -43,13 +43,14 @@ jobs:
         git config --local user.email "actions@github.com"
         git config --local user.name "GitHub Action"
         
-        # 将原始 json、新生成的修改版 json 以及下载的 png 放入暂存区
-        git add tvbox_config.json tvbox_modified.json aowu.png
+        # 强制暂存这 3 个文件
+        git add -f tvbox_config.json tvbox_modified.json aowu.png
         
-        # 检查是否有文件发生变化，有变化才提交
+        # 只要任何一个文件发生变动，就强制提交并推送
         if ! git diff --cached --quiet; then
-          git commit -m "自动更新：保持原配置，并独立生成全新的 tvbox_modified.json 以及最新 aowu.png"
+          git commit -m "自动更新：解密最新配置并更新 aowu.png 及 tvbox_modified.json [$(date +'%Y-%m-%d %H:%M:%S')]"
           git push
+          echo "【成功】所有最新配置及资源已成功推送到仓库！"
         else
           echo "所有数据均未发生变化，无需提交。"
         fi
