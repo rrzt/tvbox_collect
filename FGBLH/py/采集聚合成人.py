@@ -19,6 +19,21 @@ class Spider(Spider):
         's6': {'name': '黄色仓库', 'api': 'https://hsckzy.vip/api.php/provide/vod/'},
         's7': {'name': '奶香香资源', 'api': 'https://naixxzy.com/api.php/provide/vod/'},
         's8': {'name': '桃花资源', 'api': 'https://thzy1.me/api.php/provide/vod/'},
+        's9': {'name': 'CK伦理资源', 'api': 'https://ckzy.me/api.php/provide/vod/'},
+        's10': {'name': '大奶子资源', 'api': 'https://apidanaizi.com/api.php/provide/vod/'},
+        's11': {'name': '搜av资源', 'api': 'https://api.souavzyw.net/api.php/provide/vod/'},
+        's12': {'name': '奥斯卡资源', 'api': 'https://aosikazy1.com/api.php/provide/vod/'},
+        's13': {'name': '滴滴资源', 'api': 'https://api.ddapi.cc/api.php/provide/vod/at/json/'},
+        's14': {'name': '豆豆资源', 'api': 'https://api.douapi.cc/api.php/provide/vod/'},
+        's15': {'name': '鲨鱼资源', 'api': 'https://shayuapi.com/api.php/provide/vod/'},
+        's16': {'name': '辣椒资源', 'api': 'http://apilj.com/api.php/provide/vod/at/json/'},
+        's17': {'name': '森林资源', 'api': 'https://slapibf.com/api.php/provide/vod/'},
+        's18': {'name': '155资源', 'api': 'https://155api.com/api.php/provide/vod/'},
+        's19': {'name': '乐播资源', 'api': 'https://lbapi9.com/api.php/provide/vod/'},
+        's20': {'name': '玉兔资源', 'api': 'https://apiyutu.com/api.php/provide/vod/'},
+        's21': {'name': '番号资源', 'api': 'http://fhapi9.com/api.php/provide/vod/'},
+        's22': {'name': '精品X资源', 'api': 'https://www.jingpinx.com/api.php/provide/vod/'},
+        's23': {'name': 'jkun资源', 'api': 'https://jkunzyapi.com/api.php/provide/vod/'},
     }
 
     headers = {
