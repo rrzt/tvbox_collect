@@ -154,6 +154,13 @@
 			 "changeable": 0
 		},
 		{
+			"key": "片库",
+			"name": "🐬片库.js(关梯)",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/jar_js/片库.js",
+			"changeable": 0
+		},
+		{
 			"key": "808yr",
 			"name": "🐬808影院.py(关梯)",
 			"type": 3,
@@ -224,6 +231,12 @@
 			"name": "🐬韩小圈.py(关梯)",
 			"type": 3,
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/韩小圈.py"
+		},
+		{
+			"key": "美剧天堂",
+			"name": "🐬美剧天堂.py(关梯)",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/美剧天堂.py"
 		},
 		{
 			"key": "ww",
@@ -417,6 +430,12 @@
            "type": 3,
            "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/映像星球.py"
         },
+		{
+			"key": "cjjh",
+			"name": "🐬采集聚合.py",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/采集聚合.py"
+		},
 		{
 			"key": "fY",
 			"name": "🐬枫叶影院.py(关梯子使用)",
