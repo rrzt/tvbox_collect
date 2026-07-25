@@ -24,6 +24,17 @@
         "ext":"./lib/直播.json"
     },   
     {
+            "key": "推特APP",
+            "name": "推特APP",
+            "type": 3,
+            "api": "./py/推特APP.py",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 0,
+            "changeable": 1,
+            "playerType": 2
+    },
+    {
       "key": "XMVideo",
       "name": "🔞熊猫视频",
       "type": 3,
