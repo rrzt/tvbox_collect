@@ -1,16 +1,6 @@
 {
     "sites": [
         {
-            "key": "臻彩",
-            "name": "臻彩影视",
-            "type": 3,
-            "api": "https://gitee.com/Ye-11X115490/PsyDuck/raw/master/lib/AppYsV2.js",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1,
-            "ext": "http://bb4kcmslieyuyun.qijiyun.vip/api.php/app/"
-        },
-        {
             "key": "枫叶",
             "name": "枫叶影院",
             "type": 3,
@@ -22,16 +12,36 @@
             "playable": 1
         },
         {
-            "key": "影探",
-            "name": "至尊影探",
+            "key": "咕噜咕噜",
+            "name": "咕噜咕噜",
             "type": 4,
-            "api": "http://sf4.mftv.top/gy/ythy%E8%A7%82%E5%BD%B1.php"
+            "api": "http://bu.970088.xyz/video/咕噜99?platform=ysc&token=688988",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "changeable": 0,
+            "ext": ""
         },
         {
-            "key": "影探2",
-            "name": "影探影视",
+            "key": "皮皮虾",
+            "name": "皮皮影视",
             "type": 4,
-            "api": "http://bt.xuan666.icu/影探/公开/gx.php"
+            "api": "http://bu.970088.xyz/video/皮皮虾?platform=ysc&token=688988"
+        },
+        {
+            "key": "映视界",
+            "name": "影映视界",
+            "type": 4,
+            "api": "http://bu.970088.xyz/video/映视界?platform=ysc&token=688988"
+        },
+        {
+            "key": "星耀4K",
+            "name": "星耀影探",
+            "type": 4,
+            "api": "http://8.134.205.252:39466/pz/sx4k.php/api.php/provide/vod/?ac=list",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1
         },
         {
             "key": "CO4K",
@@ -51,17 +61,6 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 1
-        },
-        {
-            "key": "咕噜",
-            "name": "咕噜咕噜",
-            "type": 4,
-            "api": "http://211.101.247.26:99/proxy.php?code=9999&target=f5eb11c746869fd90c06",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1,
-            "changeable": 0,
-            "ext": ""
         },
         {
             "key": "布布",
@@ -130,56 +129,6 @@
             "filterable": 1
         },
         {
-            "key": "虫虫",
-            "name": "虫虫影视",
-            "type": 3,
-            "api": "https://gitee.com/Ye-11X115490/PsyDuck/raw/master/lib/虫虫影视.js",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1
-        },
-        {
-            "key": "星空",
-            "name": "星空影视",
-            "type": 3,
-            "jar": "https://gitee.com/Ye-11X115490/PsyDuck/raw/master/lib/潇洒.jar",
-            "searchable": 1,
-            "changeable": 1,
-            "api": "csp_AppGet",
-            "ext": {
-                "site": "https://xk211.xkgzs.xyz/",
-                "dataKey": "11320jkjksdkxxaw",
-                "dataIv": "11320jkjksdkxxaw"
-            }
-        },
-        {
-            "key": "秒看",
-            "name": "秒看视频",
-            "type": 3,
-            "api": "https://10402.kstore.vip/ycsk/qf.py",
-            "ext": {
-                "site": "https://mk1080.top",
-                "dataKey": "c60d88b2eep53za8",
-                "dataIv": "c60d88b2eep53za8",
-                "token": "b008fad37a80ead49addf97984b154387fddd3fe42a81a79671281b6082bcd80",
-                "ua": "okhttp/3.14.9"
-            }
-        },
-        {
-            "key": "魔方",
-            "name": "魔方视频",
-            "type": 3,
-            "jar": "https://gitee.com/Ye-11X115490/PsyDuck/raw/master/lib/潇洒.jar",
-            "searchable": 1,
-            "changeable": 1,
-            "api": "csp_AppGet",
-            "ext": {
-                "url": "https://www.alibaba31casaq.top",
-                "dataKey": "1234567887654321",
-                "dataIv": "1234567887654321"
-            }
-        },
-        {
             "key": "快映",
             "name": "快映视频",
             "type": 3,
@@ -189,15 +138,6 @@
                 "host": "https://www.kanzurm65ak.top/",
                 "ver": 3
             }
-        },
-        {
-            "key": "hohai",
-            "name": " E M B Y ",
-            "type": 4,
-            "api": "http://8.134.205.252:39466/mmcb/zc1.php/api.php/provide/vod/?ac=list",
-            "searchable": 1,
-            "quickSearch": 1,
-            "filterable": 1
         },
         {
             "key": "wanou_sites",
@@ -258,16 +198,6 @@
         }
     ],
     "parses": [
-        {
-            "name": "臻彩",
-            "type": 1,
-            "url": "http://47.116.164.219:610/jsont.php?key=ypZZAPHYMm&url=",
-            "ext": {
-                "flag": [
-                    "lieyuyun4k"
-                ]
-            }
-        },
         {
             "name": "4K",
             "type": 1,

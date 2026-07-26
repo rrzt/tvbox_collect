@@ -22,6 +22,8 @@ CCTV16奥林匹克1080p,https://php.jdshipin.com:2096/TVOD/iptv.php?id=cctv16
 
 港台,#genre#
 翡翠台,http://183.62.8.58:50085/tsfile/live/0017_1.m3u8?key=txiptv&playlive=1&authid=0
+翡翠台,https://cdn.qd.je/163189.php?id=fct
+翡翠台4K,https://cdn3.indevs.in/stream/tvb/fct4k/
 
 18+直播台,#genre#
 资源永久免费如有收费的都是骗子,http://ef90a6cd.rossteleccom.net/iptv/2TBC4G2WWDG6RSUSN5SXSQEC/14158/index.m3u8
