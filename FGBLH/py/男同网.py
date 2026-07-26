@@ -104,10 +104,10 @@ class Spider(BaseSpider):
             {"type_id": "/videos/all/10min", "type_name": "短片速看"},
             {"type_id": "/videos/category/xrbj", "type_name": "薄肌鲜肉"},
             {"type_id": "/videos/category/wtns", "type_name": "无套内射"},
+            {"type_id": "/videos/category/kjys", "type_name": "口交颜射"},
             {"type_id": "/videos/category/jrmn", "type_name": "肌肉猛男"},
             {"type_id": "/videos/category/drqp", "type_name": "群交互动"},
             {"type_id": "/videos/category/tjsm", "type_name": "调教SM"},
-            {"type_id": "/videos/category/kjys", "type_name": "口交颜射"},
             {"type_id": "/videos/category/zfyh", "type_name": "制服诱惑"},
         ]
         return self._class_cache
