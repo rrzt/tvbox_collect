@@ -10,7 +10,7 @@
   ],
   "logo"     : ".美.gif",
   "wallpaper": "https://picsum.photos/1080/",
-  "notice"   : "版本：115.07.04.Ver.2",
+  "notice"   : "版本：115.07.26.Ver.2",
   "sites"    : [
 
 
@@ -107,41 +107,25 @@
       "filterable" : 1
     },
     {
-      "key"        : "月佬好色",
-      "name"       : "⏭｜好色(月佬)｜PYTHON",
-      "type"       : 3,
-      "searchable" : 1,
-      "changeable" : 1,
-      "quickSearch": 1,
-      "api"        : "./py/py_月佬-好色tv.py",
-      "filterable" : 1
-    },
-    {
       "key": "XJCJ",
       "name": "👖TG频道@stymei丨香蕉丨12852部片",
       "type": 1,
       "api": "https://www.xiangjiaozyw.com/api.php/provide/vod/?ac=list",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1,
-      "categories": [
-        "欧美精品", "卡通动漫", "乱伦中出", "传媒原创", "口爆颜射", "岛国女优", "萝莉少女", "国产直播", "岛国群交",
-        "中文字幕", "岛国素人", "吃瓜爆料", "淫娃自慰", "公开漏出", "户外打野", "高潮喷水", "AI换脸", "AV解说",
-        "伦理三级", "韩国直播"
-      ]
+      "filterable": 1
     },
     {
-      "key"        : "18+採集",
-      "name"       : "🔞送AV采集",
-      "type"       : 1,
-      "api"        : "https://api.souavzyw.net/api.php/provide/vod/?ac=list",
+      "key"        : "射我裡面.py",
+      "name"       : "⏭｜射我裡面｜PYTHON",
+      "type"       : 3,
       "searchable" : 1,
+      "changeable" : 1,
       "quickSearch": 1,
-      "filterable" : 0,
-      "header"     : {
-        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
-      }
-    },
+      "api"        : "./py/射我里面😍.py",
+      "playerType" : 2,
+      "filterable" : 1
+    },    
     {
       "key"  : "py_推特",
       "name" : "⏭｜推特(嗷嗚)｜PYTHON",
@@ -190,21 +174,15 @@
       "changeable": 0
     },    
     {
-      "key" : "py_coomer",
-      "name": "⏭｜coomer(沐辰)｜國外",
-      "type": 3,
-      "api" : "./py/coomer.py"
-    },
-    {
       "key"        : "py_stripchat",
       "name"       : "⏭｜py_stripchat",
       "type"       : 3,
-      "api"        : "./py/py_stripchat.py",
+      "api"        : "./py/stripchat直播通用弹幕.py",
       "searchable" : 1,
       "quickSearch": 1,
       "filterable" : 0,
       "changeable" : 1
-    },
+    },    
     {
       "key"        : "py_xvd.py",
       "name"       : "⏭｜xvideos｜PYTHON",
@@ -222,16 +200,6 @@
       "searchable" : 1,
       "quickSearch": 1,
       "filterable" : 1
-    },
-    {
-      "key"        : "pornhub",
-      "name"       : "⏭｜91Pornhub｜PYTHON",
-      "type"       : 3,
-      "api"        : "./py/py_Phb.py",
-      "searchable" : 1,
-      "quickSearch": 0,
-      "filterable" : 0,
-      "changeable" : 0
     },
     {
       "key"        : "Zuise",
@@ -580,16 +548,6 @@
       "filterable" : 0,
       "changeable" : 0,
       "ext"        : {}
-    },
-    {
-      "key"        : "php_madou",
-      "name"       : "🔞麻豆(沐辰)",
-      "type"       : 4,
-      "api"        : "https://php.doube.eu.org/spider/php/麻豆.php",
-      "searchable" : 1,
-      "quickSearch": 0,
-      "changeable" : 0,
-      "style"      : {"type": "rect", "ratio": 1.78}
     },
     {
       "key"        : "csp_XYQHiker_麻豆社",
@@ -1105,6 +1063,18 @@
       "ext"        : "./json/御姐诱惑.json",
       "style"      : {"type": "rect", "ratio": 1.6}
     },
+    {
+      "key"        : "18+採集",
+      "name"       : "🔞送AV采集",
+      "type"       : 1,
+      "api"        : "https://api.souavzyw.net/api.php/provide/vod/?ac=list",
+      "searchable" : 1,
+      "quickSearch": 1,
+      "filterable" : 0,
+      "header"     : {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+      }
+    },    
     {
       "key"        : "fhapiby",
       "name"       : "🔞番号資源",

@@ -37,6 +37,15 @@
       "searchable": 0
     },
 {
+      "key": "茶杯狐[影]",
+      "name": "茶杯狐[影]｜秒播",
+      "api": "./py/茶杯狐[影].py",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "type": 3
+    },
+{
       "key": "黄豆短剧",
       "name": "黄豆｜短剧",
       "api": "./py/黄豆短剧.py",
@@ -75,13 +84,6 @@
       "quickSearch": 1,
       "filterable": 1,
       "type": 3
-    },
- {
-      "key": "飞娱影视",
-      "name": "飞鱼 ｜秒播",
-      "type": 3,
-      "jar": "./xiaosa.jar",
-      "api": "csp_Feiyu"
     },
 {
       "key": "山楂影视",
