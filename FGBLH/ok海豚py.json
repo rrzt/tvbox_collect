@@ -143,6 +143,12 @@
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/4K影视.py"
 		},
 		{
+			"key": "蝶卡影视",
+			"name": "🐬蝶卡影视.py(关梯)",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/蝶卡影视.py"
+		},
+		{
 			"key": "ddyy",
 			"name": "🐬低端影视.py",
 			"type": 3,
@@ -573,6 +579,24 @@
 			"name": "🐬蜜桃视频.py(羊壳观看)｜🔞",
 			"type": 3,
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/蜜桃视频.py"
+		},
+		{
+			"key": "樱花传媒",
+			"name": "🐬樱花传媒.py｜🔞",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/樱花传媒.py"
+		},
+		{
+			"key": "BadNews",
+			"name": "🐬BadNews.py｜🔞(挂梯)",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/BadNews.py"
+		},
+		{
+			"key": "麻豆社",
+			"name": "🐬麻豆社.py｜🔞",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/麻豆社.py"
 		},
 		{
 			"key": "prsd",
@@ -1082,6 +1106,17 @@
             "ua": "okhttp",
             "url": "https://php.946985.filegear-sg.me/jackTV.m3u"
         },
+		{
+           "name": "🐬海豚佬🔞午夜剧场(挂梯)",
+           "type": 0,
+           "playerType": 2,
+           "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
+           "logo": "https://epg.112114.xyz/logo/{name}.png",
+           "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/午夜剧场.txt",
+           "header": {
+            "X-Api-key": "8692bd33270440d4d2941b814b81a25a1eb84a7205532971714c4299c57449e0..0..1738210005..5cf2c4ad-043b-4234-83a2-e84ae917"
+        }
+		},
 	    {
             "name": "🐬海豚佬xxx视频资源🔞",
             "type": 0,

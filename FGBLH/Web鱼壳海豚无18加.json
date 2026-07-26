@@ -161,6 +161,13 @@
 			"changeable": 0
 		},
 		{
+			"key": "枫叶影院",
+			"name": "🐬枫叶影院.js(关梯)",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/jar_js/枫叶影院.js",
+			"changeable": 0
+		},
+		{
 			"key": "808yr",
 			"name": "🐬808影院.py(关梯)",
 			"type": 3,
@@ -219,6 +226,12 @@
 			"name": "🐬4K影视.py",
 			"type": 3,
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/4K影视.py"
+		},
+		{
+			"key": "蝶卡影视",
+			"name": "🐬蝶卡影视.py(关梯)",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/蝶卡影视.py"
 		},
 		{
 			"key": "ddyy",

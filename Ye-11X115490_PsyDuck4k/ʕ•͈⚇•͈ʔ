@@ -35,6 +35,16 @@
             "api": "http://bu.970088.xyz/video/映视界?platform=ysc&token=688988"
         },
         {
+            "key": "速搜",
+            "name": "速搜影视",
+            "type": 3,
+            "api": "https://kun.4275.com/202607261601/83617631494e4d9f3134e3694f67f989/2026/07/26/162639XOhFlZWS.py?response-content-disposition=filename%3D%25E9%2580%259F%25E6%2590%259C.py&response-content-type=application%2Foctet-stream&OSSAccessKeyId=LTAIsiWtWjktW7Aa&Expires=1785056205&Signature=dZKoYc6Um1D2O79rNyvFVURAJjE%3D",
+            "timeout": 10,
+            "searchable": 1,
+            "quickSearch": 0,
+            "changeable": 0
+        },
+        {
             "key": "星耀4K",
             "name": "星耀影探",
             "type": 4,
@@ -89,35 +99,6 @@
             "searchable": 1,
             "quickSearch": 1,
             "filterable": 1
-        },
-        {
-            "key": "bili",
-            "name": "哔哩哔哩",
-            "type": 4,
-            "api": "http://211.101.247.26:99/proxy.php?code=9999&target=f064a77443204ab4568d",
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 0
-        },
-        {
-            "key": "爱奇艺",
-            "name": "奇艺视频",
-            "type": 3,
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1,
-            "api": "https://gitee.com/monosodium-glutamate/wjwj/raw/master/lib/drpy2.min.js",
-            "ext": "https://gitee.com/Ye-11X115490/PsyDuck/raw/master/lib/爱奇艺.js"
-        },
-        {
-            "key": "优酷",
-            "name": "优酷视频",
-            "type": 3,
-            "searchable": 1,
-            "quickSearch": 1,
-            "changeable": 1,
-            "api": "https://gitee.com/monosodium-glutamate/wjwj/raw/master/lib/drpy2.min.js",
-            "ext": "https://gitee.com/Ye-11X115490/PsyDuck/raw/master/lib/优酷视频.js"
         },
         {
             "key": "山楂影视",

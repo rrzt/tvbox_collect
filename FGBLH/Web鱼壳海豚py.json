@@ -144,6 +144,12 @@
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/4K影视.py"
 		},
 		{
+			"key": "蝶卡影视",
+			"name": "🐬蝶卡影视.py(关梯)[追剧]",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/蝶卡影视.py"
+		},
+		{
 			"key": "ddyy",
 			"name": "🐬低端影视.py[追剧]",
 			"type": 3,
@@ -546,6 +552,18 @@
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/采集聚合成人.py"
 		},
 		{
+			"key": "BadNews",
+			"name": "🐬BadNews.py｜🔞[成人](挂梯)",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/BadNews.py"
+		},
+		{
+			"key": "麻豆社",
+			"name": "🐬麻豆社.py｜🔞[成人]",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/麻豆社.py"
+		},
+		{
 			"key": "prsd",
 			"name": "🐬怦然心动.py｜🔞[成人]",
 			"type": 3,
@@ -921,6 +939,17 @@
             "type": 0,
             "ua": "okhttp",
             "url": "https://php.946985.filegear-sg.me/jackTV.m3u"
+        },
+		{
+           "name": "🐬海豚佬🔞午夜剧场(挂梯)",
+           "type": 0,
+           "playerType": 2,
+           "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
+           "logo": "https://epg.112114.xyz/logo/{name}.png",
+           "url": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/午夜剧场.txt",
+           "header": {
+            "X-Api-key": "8692bd33270440d4d2941b814b81a25a1eb84a7205532971714c4299c57449e0..0..1738210005..5cf2c4ad-043b-4234-83a2-e84ae917"
+		   }
         },
 	    {
             "name": "🐬海豚佬xxx视频资源🔞",
