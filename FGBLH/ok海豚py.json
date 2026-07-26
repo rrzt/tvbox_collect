@@ -1,5 +1,5 @@
 {
-    "spider": "./tvbox.jar",
+    "spider": "",
     "logo": "https://img.freepik.com/free-vector/cute-dolphin-swimming-cartoon-vector-icon-illustration-animal-nature-icon-isolated-flat-vector_138676-12582.jpg?semt=ais_hybrid&w=740&q=80",
     "wallpaper":"http://tool.teyonds.com/api",
     "warningText": "注意:如果别人倒卖海豚影视接口收费的都是骗子,没有qq群微信群，只有tg官方交流群 TG：@hshsjk",
@@ -581,6 +581,12 @@
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/蜜桃视频.py"
 		},
 		{
+			"key": "猫咪TV",
+			"name": "🐬猫咪TV.py｜🔞",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/猫咪TV.py"
+		},
+		{
 			"key": "樱花传媒",
 			"name": "🐬樱花传媒.py｜🔞",
 			"type": 3,
@@ -699,6 +705,12 @@
 			"name": "🐬8X8X.py｜🔞",
 			"type": 3,
 			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/8X8X.py"
+		},
+		{
+			"key": "Jable",
+			"name": "🐬Jable.py｜🔞",
+			"type": 3,
+			"api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/Jable.py"
 		},
 		{
 			"key": "Xvideos",
