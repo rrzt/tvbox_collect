@@ -95,12 +95,20 @@ class Spider(BaseSpider):
         if self._class_cache:
             return self._class_cache
         self._class_cache = [
-            {"type_id": "/videos", "type_name": "精选影片"},
+            {"type_id": "/videos/all/new", "type_name": "今日更新"},
+            {"type_id": "/videos/all/every", "type_name": "全站最热"},
             {"type_id": "/videos/category/rhgv", "type_name": "日韩专区"},
             {"type_id": "/videos/category/omjd", "type_name": "欧美专区"},
-            {"type_id": "/videos/all/xiaolan", "type_name": "原创专区"},
+            {"type_id": "/videos/all/xiaolan", "type_name": "小蓝原创"},
             {"type_id": "/videos/all/20min", "type_name": "长片专区"},
             {"type_id": "/videos/all/10min", "type_name": "短片速看"},
+            {"type_id": "/videos/category/xrbj", "type_name": "薄肌鲜肉"},
+            {"type_id": "/videos/category/wtns", "type_name": "无套内射"},
+            {"type_id": "/videos/category/jrmn", "type_name": "肌肉猛男"},
+            {"type_id": "/videos/category/drqp", "type_name": "群交互动"},
+            {"type_id": "/videos/category/tjsm", "type_name": "调教SM"},
+            {"type_id": "/videos/category/kjys", "type_name": "口交颜射"},
+            {"type_id": "/videos/category/zfyh", "type_name": "制服诱惑"},
         ]
         return self._class_cache
 
