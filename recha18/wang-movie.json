@@ -2,7 +2,7 @@
   "spider": "./jar/fm.jar;md5;b0adab2fad1de8871b9533527f407cdf",
   "logo": "https://p3-pc.douyinpic.com/img/aweme-avatar/tos-cn-i-0813_6e2553f5708c414386eeca88b5f2674a~c5_300x300.jpeg?from=2956013662",
   "wallpaper": "https://gitlab.com/tenrecha/recha/-/raw/main/background.jpg",
-  "notice": "115.07.22 ver.2 修一些小bug",
+  "notice": "115.07.28 ver.2 修復YT",
   "sites": [ 
       
 
@@ -30,17 +30,13 @@
     },
     {
       "key"        : "YouTube",
-      "name"       : "♓️｜YouTube｜SO",
+      "name"       : "🇹🇼｜YouTube｜PY",
       "type"       : 3,
-      "api"        : "csp_Ytdl",
+			"api": "./py/油管.py",
       "searchable" : 1,
       "quickSearch": 1,
-      "playerType" : 2,
-      "timeout"    : 30,
       "filterable" : 1,
-      "style"      : {"type": "rect", "ratio": 1.33},
-      "jar"        : "./lib/Youtube.jar",
-      "ext"        : {"proxy": "", "youtube_txt": "./lib/Youtube.txt"}
+      "style"     : {"ratio": 1.7}
     },
     {
       "key": "金牌影视",

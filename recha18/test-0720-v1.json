@@ -8,6 +8,7 @@
             "key":"youtube",
             "name":"youtube",
 			"type": 3,
+      "style"     : {"ratio": 1.7},
 			"api": "./py/油管.py"
 		},
     {
