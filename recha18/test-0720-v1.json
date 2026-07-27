@@ -4,6 +4,12 @@
   "wallpaper": "https://gitlab.com/tenrecha/recha/-/raw/main/background.jpg",
   "notice": "115.07.20 ver.3 加入嗷嗚漫劇",
   "sites": [ 
+    		{
+            "key":"youtube",
+            "name":"youtube",
+			"type": 3,
+			"api": "./py/油管.py"
+		},
     {
       "key"       : "py_黃豆短劇",
       "name"      : "🔞｜黃豆｜？",

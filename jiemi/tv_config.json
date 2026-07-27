@@ -1,5 +1,5 @@
 {
-  "spider": "https://qiniu.gongxueyun.com/upload/1175457/2026-07-25/avatar/569288413_5_1784984049293.jar;md5;feb6609d3068ef3baa24e563adaf8889",
+  "spider": "https://media.meilinvps.com/download.php?key=MzlmMTAyZjliODI3M2Y3ZDhkMDI4ZDI1OTU5MzY3ODU6NmU1MThlNjdlNWNkODZjZTc0YmY3OTMxMzIyYzUwNzdiM2Y5OGMxMTQ3NDYwZWY0ODFlN2EwMDYzNTYyOTkyMGM2ZmY2ZDk5NzRlODcyMjhlMjg0ZTllZjI0NWYyZGU4YTVlMDcyNWQ4MTAzNTFmMTgyYzYxMTFiNWNhNTJlOWM0YTljMjAyNjI5OTU0MDMxOWUwZGJiMTRhODdkZmE5Yg;md5;75e9e21c71cf773d649c9700f4444a21",
   "logo": "https://modelscope-resouces.oss-cn-zhangjiakou.aliyuncs.com/avatar%2Ff5309172-1af6-4c4f-a1c5-a4773a1cc718.gif",
   "wallpaper": "http://127.0.0.1:9978/proxy?do=wallpaper",
   "danmaku": "http://127.0.0.1:5266/danmu/webhtv?name={name}&episode={episode}",
@@ -635,7 +635,8 @@
       "api": "csp_FanShu",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1
+      "filterable": 1,
+      "ext": "https://max.moyu666666.top/fanshu.php"
     },
     {
       "key": "双星",
