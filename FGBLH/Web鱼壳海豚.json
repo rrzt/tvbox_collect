@@ -17,6 +17,12 @@
             "api": "csp_Nostr",
             "homePage": "https://www.252035.xyz/xs/tvbox/nostr.html"
         },
+		{
+          "key": "自动加载",
+          "name": "🐬自动加载.PY",
+          "type": 3,
+          "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/自动加载.py"
+        },
         {
          "key":"AQY",
         "name":"🐬爱奇艺 海豚影视完全免费，如有收费的都是骗子[追剧]",
