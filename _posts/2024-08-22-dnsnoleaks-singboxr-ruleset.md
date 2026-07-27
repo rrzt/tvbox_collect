@@ -78,7 +78,6 @@ tags: [sing-box, sing-boxr, ShellCrash, ruleset, rule_set, 进阶, DNS, DNS 泄�
       ],
       "final": "dns_proxy",
       "strategy": "prefer_ipv4",
-      "cache_client_subnet": true,
       "optimistic": true,
       "reverse_mapping": true
     }
@@ -124,7 +123,6 @@ tags: [sing-box, sing-boxr, ShellCrash, ruleset, rule_set, 进阶, DNS, DNS 泄�
       ],
       "final": "dns_proxy",
       "strategy": "prefer_ipv4",
-      "cache_client_subnet": true,
       "optimistic": true,
       "reverse_mapping": true
       // 推荐将 `client_subnet` 设置为当前宽带运营商分配的默认 DNS 的 IP 段
@@ -174,7 +172,6 @@ tags: [sing-box, sing-boxr, ShellCrash, ruleset, rule_set, 进阶, DNS, DNS 泄�
       ],
       "final": "dns_proxy",
       "strategy": "prefer_ipv4",
-      "cache_client_subnet": true,
       "optimistic": true,
       "reverse_mapping": true
     }

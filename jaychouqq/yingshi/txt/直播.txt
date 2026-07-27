@@ -10,7 +10,7 @@
 {"name":"🥘18+👿","url":"https://gitee.com/sji820/des/raw/master/0.jpg&&&http://api.btstu.cn/sjbz/"},
 {"name":"🥘jackTV👿","url":"https://php.946985.filegear-sg.me/jackTV.m3u&&&http://api.btstu.cn/sjbz/"},
 {"name":"🥘易发👿","url":"https://down.nigx.cn/raw.githubusercontent.com/fafa002/yf2025/refs/heads/main/yiyifafa.txt&&&http://api.btstu.cn/sjbz/"},
-{"name":"🥘Jsnzkpg👿","url":"https://gh-proxy.org/https://raw.githubusercontent.com/Jsnzkpg/Jsnzkpg/Jsnzkpg/Jsnzkpg1.m3u&&&http://api.btstu.cn/sjbz/"},
+{"name":"🥘Jsnzkpg👿","url":"https://tv.tmxk.kdns.fr/ex64181y&&&http://api.btstu.cn/sjbz/"},
 {"name":"🥘韩国18👿","url":"https://gh-proxy.com/https://raw.githubusercontent.com/wliqi495-create/jaychouqq/refs/heads/main/hgll1.m3u&&&http://api.btstu.cn/sjbz/"},
 {"name":"🥘韩国女团","url":"https://gist.githubusercontent.com/yuanwangokk-1/a661dd0e88466aa22f2a7c1fb375635e/raw/8708d9947be1c64c52bb1610a30aaa1b595848c9/韩国女团直播.m3u&&&http://api.btstu.cn/sjbz/"}
 

@@ -17,6 +17,7 @@ tags: [sing-box, sing-boxr, Android, ruleset, rule_set, 分享]
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/reF1nd/sing-box/reF1nd-testing/docs/schema.json",
   "providers": [
     {
       "tag": "🛫 机场订阅",
@@ -82,8 +83,7 @@ tags: [sing-box, sing-boxr, Android, ruleset, rule_set, 分享]
     "final": "dns_direct",
     "strategy": "prefer_ipv4",
     "optimistic": true,
-    "reverse_mapping": true,
-    "cache_client_subnet": true
+    "reverse_mapping": true
   },
   "http_clients": [ { "tag": "detour_proxy", "detour": "GLOBAL" } ],
   "inbounds": [
@@ -235,8 +235,7 @@ tags: [sing-box, sing-boxr, Android, ruleset, rule_set, 分享]
     "final": "dns_proxy",
     "strategy": "prefer_ipv4",
     "optimistic": true,
-    "reverse_mapping": true,
-    "cache_client_subnet": true
+    "reverse_mapping": true
   }
 }
 ```

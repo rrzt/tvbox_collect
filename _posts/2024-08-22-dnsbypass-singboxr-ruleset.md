@@ -74,7 +74,6 @@ tags: [sing-box, sing-boxr, ShellCrash, ruleset, rule_set, 进阶, DNS, DNS 分�
     ],
     "final": "dns_proxy",
     "strategy": "prefer_ipv4",
-    "cache_client_subnet": true,
     "optimistic": true,
     "reverse_mapping": true
   }

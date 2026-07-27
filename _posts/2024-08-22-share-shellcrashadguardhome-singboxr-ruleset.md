@@ -204,7 +204,6 @@ sc
     ],
     "final": "dns_direct",
     "strategy": "prefer_ipv4",
-    "cache_client_subnet": true,
     "optimistic": true,
     "reverse_mapping": true
   }
@@ -256,7 +255,6 @@ sc
     ],
     "final": "dns_proxy",
     "strategy": "prefer_ipv4",
-    "cache_client_subnet": true,
     "optimistic": true,
     "reverse_mapping": true
   }

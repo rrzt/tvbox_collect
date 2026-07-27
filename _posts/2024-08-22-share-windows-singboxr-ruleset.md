@@ -18,6 +18,7 @@ tags: [sing-box, sing-boxr, Windows, ruleset, rule_set, 分享]
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/reF1nd/sing-box/reF1nd-testing/docs/schema.json",
   "providers": [
     {
       "tag": "🛫 机场订阅",
@@ -82,7 +83,6 @@ tags: [sing-box, sing-boxr, Windows, ruleset, rule_set, 分享]
     ],
     "final": "dns_direct",
     "strategy": "prefer_ipv4",
-    "cache_client_subnet": true,
     "optimistic": true,
     "reverse_mapping": true
   },
@@ -232,7 +232,6 @@ tags: [sing-box, sing-boxr, Windows, ruleset, rule_set, 分享]
     ],
     "final": "dns_proxy",
     "strategy": "prefer_ipv4",
-    "cache_client_subnet": true,
     "optimistic": true,
     "reverse_mapping": true
   }
