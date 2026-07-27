@@ -10,9 +10,117 @@
   ],
   "logo"     : ".美.gif",
   "wallpaper": "https://picsum.photos/1080/",
-  "notice"   : "版本：115.07.26.Ver.2",
+  "notice"   : "版本：115.07.27.Ver.2",
   "sites"    : [
 
+		{
+			"key": "真实人妻",
+			"name": "🔞真实人妻.py",
+			"type": 3,
+			"api": "./py/真实人妻.py"
+		},
+    		{
+			"key": "猫咪TV",
+			"name": "🔞咪TV.py",
+			"type": 3,
+			"api": "./py/猫咪TV.py"
+		},
+		{
+			"key": "麻豆社",
+			"name": "🔞麻豆社.py",
+			"type": 3,
+			"api": "./py/麻豆社.py"
+		},
+		{
+			"key": "prsd",
+			"name": "🔞怦然心动.py",
+			"type": 3,
+			"api": "./py/怦然心动.py"
+		},
+		{
+			"key": "lyt",
+			"name": "🔞撸一天.py",
+			"type": 3,
+			"api": "./py/撸一天.py"
+		},
+		{
+			"key": "scpd",
+			"name": "🔞香肠派对.py",
+			"type": 3,
+			"api": "./py/香肠派对.py"
+		},
+		{
+			"key": "8X8X",
+			"name": "🔞8X8X.py",
+			"type": 3,
+			"api": "./py/8X8X.py"
+		},
+		{
+			"key": "Jable",
+			"name": "🔞Jable.py",
+			"type": 3,
+			"api": "./py/Jable.py"
+		},
+		{
+			"key": "Xvideos",
+			"name": "🔞Xvideos.py",
+			"type": 3,
+			"api": "./py/Xvideos.py"
+		},
+		{
+			"key": "Pornhub",
+			"name": "🔞Pornhub.py",
+			"type": 3,
+			"api": "./py/Pornhub.py"
+		},
+		{
+			"key": "xhamster",
+			"name": "🔞xhamster.py",
+			"type": 3,
+			"api": "./py/xhamster.py"
+		},
+		{
+			"key": "eporner",
+			"name": "🔞EPORNER.py",
+			"type": 3,
+			"api": "./py/EPORNER.py"
+		},
+		{
+			"key": "91porn",
+			"name": "🔞91porn.py",
+			"type": 3,
+			"api": "./py/91porn.py"
+		},
+		{
+			"key": "fullhd",
+			"name": "🔞FullHD.py",
+			"type": 3,
+			"api": "./py/FullHD.py"
+		},
+		{
+			"key": "JAV36",
+			"name": "🔞JAV36.py",
+			"type": 3,
+			"api": "./py/JAV36.py"
+		},
+		{
+			"key": "ggsp",
+			"name": "🔞久久視頻.py",
+			"type": 3,
+			"api": "./py/久久視頻.py"
+		},
+		{
+			"key": "TOPTV",
+			"name": "🔞TOPTV.py",
+			"type": 3,
+			"api": "./py/TOPTV.py"
+		},
+		{
+			"key": "VHUB",
+			"name": "🔞VHUB.py",
+			"type": 3,
+			"api": "./py/VHUB[成人].py"
+		},
 
     {
       "key"       : "麻豆",

@@ -19,7 +19,7 @@ YOUTUBE_CLASSES = [
     {'type_id': '最新新聞', 'type_name': '新聞'},
     {'type_id': '新聞直播', 'type_name': '新聞直播'},
     {'type_id': '歌曲', 'type_name': '歌曲'},
-    {'type_id': '動畫片', 'type_name': '動畫片'},
+    {'type_id': '動畫', 'type_name': '動畫'},
     {'type_id': '短劇', 'type_name': '短劇'},
     {'type_id': '劇集', 'type_name': '劇集'},
     {'type_id': '電影', 'type_name': '電影'},
@@ -28,6 +28,15 @@ YOUTUBE_CLASSES = [
     {'type_id': '16K HDR', 'type_name': '16K HDR'},
     {'type_id': '科技', 'type_name': '科技'},
     {'type_id': '解說', 'type_name': '解說'},
+    {'type_id': '台劇', 'type_name': '台劇'},
+    {'type_id': '陸劇', 'type_name': '陸劇'},
+    {'type_id': '綜藝', 'type_name': '綜藝'},
+    {'type_id': '網紅', 'type_name': '網紅'},
+    {'type_id': '靈異', 'type_name': '靈異'},
+    {'type_id': '探險', 'type_name': '探險'},
+    {'type_id': '旅遊', 'type_name': '旅遊'},
+    {'type_id': '美食', 'type_name': '美食'},
+    
 ]
 
 CATEGORY_QUERY = {

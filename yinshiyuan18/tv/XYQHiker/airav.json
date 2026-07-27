@@ -34,7 +34,7 @@
 "分类片单链接加前缀": "https://airav.io",
 "分类片单链接加后缀": "",
 "搜索请求头参数": "User-Agent$手机",
-"搜索链接": "https://airav.io/index.aspx?search_type=1&kw={wd}",
+"搜索链接": "https://airav.io/search_result?kw={wd}&idx={pg}",
 "POST请求数据": "",
 "搜索截取模式": "1",
 "搜索列表数组规则": "body&&.m_vedio",

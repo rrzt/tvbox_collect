@@ -132,6 +132,17 @@
       "ua": "okhttp",
       "url": "https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/xxx视频资源.txt"
     },          
+		{
+           "name": "🔞午夜剧场",
+           "type": 0,
+           "playerType": 2,
+           "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
+           "logo": "https://epg.112114.xyz/logo/{name}.png",
+           "url": "https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/午夜剧场.txt",
+           "header": {
+            "X-Api-key": "8692bd33270440d4d2941b814b81a25a1eb84a7205532971714c4299c57449e0..0..1738210005..5cf2c4ad-043b-4234-83a2-e84ae917"
+		   }
+        },    
     {
       "name": "台灣景點直播(freeman)",
       "playerType": 2,
