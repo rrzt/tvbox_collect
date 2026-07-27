@@ -3,13 +3,13 @@
   "wallpaper": "https://www.wexwp.cc/bizhi.php",
   "logo": "https://wkphoto.bj.bcebos.com/bba1cd11728b47106798119ad3cec3fdfc032335.jpg",
   "lives": [
-        {
-            "name": "📺电视┃直播",
-            "type": 0,
-            "url": "https://gh-proxy.org/https://raw.githubusercontent.com/goodcommunication/mydm/main/dm.json",
-            "ua": "okhttp/3.15",
-            "playerType": 2
-        }
+    {
+      "name": "📺电视┃直播",
+      "type": 0,
+      "url": "https://gh-proxy.org/https://raw.githubusercontent.com/goodcommunication/mydm/main/dm.json",
+      "ua": "okhttp/3.15",
+      "playerType": 2
+    }
   ],
   "sites": [
     {

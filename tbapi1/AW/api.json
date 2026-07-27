@@ -403,16 +403,6 @@
       "changeable": 0
     },
     {
-      "name": "🔗Gaze|2K",
-      "key": "Gaze",
-      "type": 3,
-      "api": "csp_GazeAmns",
-      "searchable": 1,
-      "quickSearch": 1,
-      "changeable": 0,
-      "ext": "https://gaze.red,https://gazes.store,https://gazes.top,https://gazes.host"
-    },
-    {
       "name": "🔗哔嘀|2K",
       "key": "Bidys",
       "type": 3,
