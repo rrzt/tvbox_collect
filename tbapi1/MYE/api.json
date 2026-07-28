@@ -326,7 +326,7 @@
       },
       "ext": {
         "site": [
-          "https://guangya.qsxy.top"
+          "https://www.guangya.net"
         ],
         "cookie": ""
       }
@@ -635,7 +635,8 @@
       "api": "csp_FanShu",
       "searchable": 1,
       "quickSearch": 1,
-      "filterable": 1
+      "filterable": 1,
+      "ext": "https://max.moyu666666.top/fanshu.php"
     },
     {
       "key": "双星",

@@ -642,6 +642,16 @@
             "timeout": 60
         },
         {
+            "key": "移动",
+            "name": "移动 • 4K",
+            "type": 3,
+            "api": "csp_Yidong4K",
+            "searchable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "timeout": 60
+        },
+        {
             "key": "人人",
             "name": "人人 • 4K",
             "type": 3,

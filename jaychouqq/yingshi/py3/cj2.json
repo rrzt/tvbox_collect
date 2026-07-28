@@ -57,6 +57,20 @@
             "bz": "1",
             "paichu": "1,2,3,4"
         },
+         {
+            "name": "AV-火速资源",
+            "api": "https://api.huosuapi.cc/api.php/provide/vod/",
+            "detail": "https://api.huosuapi.cc",
+            "bz": "1",
+            "paichu": "1,2,3,4"
+        },
+       {
+            "name": "AV-嘿嘿资源",
+            "api": "https://api.heiapi.cc/api.php/provide/vod/",
+            "detail": "https://api.heiapi.cc",
+            "bz": "1",
+            "paichu": "1,2,3,4"
+        },
         {
             "name": "AV-155资源",
             "api": "https://155api.com/api.php/provide/vod",

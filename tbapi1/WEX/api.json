@@ -16,7 +16,7 @@
     },
     {
       "key": "Doubanaaaa",
-      "name": "🐮【更新日期:20260726】🐮",
+      "name": "🐮【更新日期:20260727-1】🐮",
       "type": 3,
       "api": "csp_NewDouBanGuard",
       "indexs": 1,
@@ -99,6 +99,15 @@
       "name": "💓盘链┃4K💓",
       "type": 3,
       "api": "csp_AiNewPanLianGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "AiNewPianKu",
+      "name": "💓盘库┃4K💓",
+      "type": 3,
+      "api": "csp_AiNewPianKuGuard",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 0
