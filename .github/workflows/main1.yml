@@ -58,7 +58,7 @@ jobs:
                [李在付]="https://github.com/lizaifu2026/df.git" 
             [cpu_iy3]="https://github.com/IY-CPU/IY.git" 
             [cpu_iy]="https://gitee.com/cpu-iy/iy.git" 
-            [cpu_iy2]="https://gitee.com/cpu-iy/lib.git" 
+            [cpu_iy2]="https://github.com/yvor-liu/tvbox.git" 
             [reF1nd]="https://github.com/syccccc2333-oss/singbox_config.git" 
             [bd]="https://github.com/xiaohaozifeifeifei/bd.git" 
             [catvod]="https://github.com/Darklessing/catvod.git" 
