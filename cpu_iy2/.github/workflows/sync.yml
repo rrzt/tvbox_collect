@@ -1,0 +1,96 @@
+name: Auto Sync 天神接口（iy.zip）& Build Merged Interface
+
+permissions:
+  contents: write
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # 每 6 小时运行一次
+  workflow_dispatch:        # 手动触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      # 清理旧目录（删除旧 zip 和同名文件夹）
+      - name: Clean old extracted folders
+        run: |
+          ZIP_NAME="缘起【天神IY】.zip"
+          FOLDER_NAME="缘起【天神IY】"
+          rm -rf "$ZIP_NAME" "$FOLDER_NAME" || true
+
+      # 下载 zip
+      - name: Download zip
+        run: |
+          ZIP_NAME="缘起【天神IY】.zip"
+          URL="https://raw.githubusercontent.com/IY-CPU/IY/main/$ZIP_NAME"
+          
+          for i in {1..5}; do
+            # 新增 -f 参数: 遇到 404 等错误直接报错，不保存错误网页
+            # 新增 -H "User-Agent...": 伪装成浏览器，防止 Gitee 拦截 curl
+            curl -f -L --retry 5 --retry-delay 2 --max-time 60 \
+              -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+              -o "$ZIP_NAME" "$URL" && break
+          done
+          
+          # 检查文件是否存在且大小大于 0 
+          if [ ! -s "$ZIP_NAME" ]; then
+            echo "❌ $ZIP_NAME 下载失败或文件为空"
+            exit 1
+          fi
+
+      # 解压到同名文件夹
+      - name: Unzip to folder
+        run: |
+          ZIP_NAME="缘起【天神IY】.zip"
+          FOLDER_NAME="缘起【天神IY】"
+
+          mkdir -p "$FOLDER_NAME"
+          unzip -o "$ZIP_NAME" -d "$FOLDER_NAME" || {
+            echo "❌ 解压失败"
+            exit 1
+          }
+
+      # 运行 extract.js
+      - name: Extract JSON
+        run: node extract.js || exit 1
+
+      # 调试输出
+      - name: Debug TXT
+        run: |
+          ls -R .
+          cat 天神IY.txt || exit 1
+
+      # 合并补丁
+      - name: Merge JSON
+        run: node merge.js || exit 1
+
+      # 检查是否有变化
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      # 推送到 GitHub
+      - name: Commit and push to GitHub
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Auto-sync iy.zip & rebuild merged interface" || echo "No changes to commit"
+          git push

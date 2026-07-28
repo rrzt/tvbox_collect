@@ -1,0 +1,163 @@
+{
+  "wallpaper": "",
+  "warningText": "",
+  "lives": [
+    {
+      "name": "测试1",
+      "delete": true
+    },
+    {
+      "name": "测试2",
+      "delete": true
+    },
+    {
+      "name": "测试3",
+      "delete": true
+    },
+    {
+      "name": "无意云空间",
+      "delete": true
+    },
+    {
+      "name": "IPTV365",
+      "type": 0,
+      "url": "https://gh-proxy.org/https://raw.githubusercontent.com/kimwang1978/collect-txt/main/bbxx.txt",
+      "playerType": 2,
+      "epg": "http://epg.51zmt.top:8000/api/diyp/?ch={name}&date={date}"
+    }
+  ],
+  "sites": [
+    {
+      "key": "版本信息",
+      "delete": true
+    },
+    {
+      "key": "路漫漫",
+      "delete": true
+    },
+    {
+      "key": "IY音乐台",
+      "delete": true
+    },
+    {
+      "key": "lf_live10_min",
+      "delete": true
+    },
+    {
+      "key": "短木",
+      "delete": true
+    },
+    {
+      "key": "爱听音乐",
+      "delete": true
+    },
+    {
+      "key": "易听音乐",
+      "delete": true
+    },
+    {
+      "key": "听了么",
+      "delete": true
+    },
+    {
+      "key": "六月听书",
+      "delete": true
+    },
+    {
+      "key": "世界听书",
+      "delete": true
+    },
+    {
+      "key": "蜻蜓FM",
+      "delete": true
+    },
+    {
+      "key": "凤凰FM",
+      "delete": true
+    },
+    {
+      "key": "随身评书",
+      "delete": true
+    },
+    {
+      "key": "戏曲多多",
+      "delete": true
+    },
+    {
+      "key": "919体育",
+      "delete": true
+    },
+    {
+      "key": "球通体育",
+      "delete": true
+    },
+    {
+      "key": "瓜子体育",
+      "name": "📺看球｜点播",
+      "type": 3,
+      "api": "csp_SportKaFeiGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "style": {
+        "type": "list"
+      }
+    },
+    {
+      "key": "88看球",
+      "name": "📺抖音｜点播",
+      "type": 4,
+      "api": "http://115.191.55.109:7023/api/tvbox/source/2054142177793019904?token=phcB9KDg6dzm8lNH5uG67q5BXdf0X3dR",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 0,
+      "playable": 1
+    },
+    {
+      "key": "哔哩演唱会",
+      "delete": true
+    },
+    {
+      "key": "哔哩听书",
+      "delete": true
+    },
+    {
+      "key": "哔哩相声",
+      "delete": true
+    },
+    {
+      "key": "哔哩小品",
+      "delete": true
+    },
+    {
+      "key": "哔哩戏曲",
+      "delete": true
+    },
+    {
+      "key": "少儿教育",
+      "delete": true
+    },
+    {
+      "key": "小学课堂",
+      "delete": true
+    },
+    {
+      "key": "初中课堂",
+      "delete": true
+    },
+    {
+      "key": "高中课堂",
+      "delete": true
+    },
+    {
+      "key": "养生堂",
+      "delete": true
+    },
+    {
+      "key": "急救教学",
+      "delete": true
+    }
+  ]
+}

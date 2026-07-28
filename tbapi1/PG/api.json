@@ -125,7 +125,9 @@
 				"ratio": 1.77
 			}
 		},
-		{"key":"zmi","name":"蜗牛|网盘","type":3,"api":"csp_Zmi","searchable":1,"quickSearch":1,"filterable":1,"timeout":60, "ext":"./lib/tokenm.json$$$https://zmi.kdns.fr/$$$noproxy$$$1$$$$$$WONIU"},
+		{ "key": "盘链", "name": "盘链|网盘", "type": 3, "api": "csp_PingLian", "searchable": 1, "timeout":60, "ext": "./lib/tokenm.json$$$https://pinglian.lol$$$$$$0$$$$$$PANLIAN$$$USER$$$PASS" },
+		{"key":"csp_Qwmp4","name":"七味|网盘|磁力","type":3,"api":"csp_Qwmp4","searchable":1,"quickSearch":1,"filterable":0, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.qwmp4.com/$$$noproxy$$$0$$$$$QIWEI"},
+		{"key":"zmi","name":"蜗牛|网盘","type":3,"api":"csp_Zmi","searchable":1,"quickSearch":1,"filterable":1,"timeout":60, "ext":"./lib/tokenm.json$$$https://zmi.kdns.fr/$$$proxy$$$1$$$$$$WONIU"},
 		{"key":"Mogg","name":"木偶哥哥|网盘","type":3,"api":"csp_Mogg","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$http://123.666291.xyz/$$$noproxy$$$1$$$./lib/wogg.json$$$MOGG"},
 		{"key":"PanSouGo","name":"PanSouGo|网盘","type":3,"api":"csp_PanSouGo","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":
 			{
@@ -160,11 +162,11 @@
 		},
 		{"key":"HuamuCangShare","name":"花木藏|网盘","type":3,"api":"csp_HuamuCangShare","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/token.json$$$https://share.huamucang.top/$$$noproxy$$$1$$$./lib/huamucang.txt$$$HUAMUCANG$$$USER$$$PASS"},
 		{"key":"Hema4k","name":"盒马|网盘|磁力","type":3,"api":"csp_Hema4k","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.hema4k.com/$$$proxy$$$1$$$./lib/hema4k.txt$$$HEMA4K"},
-		{"key":"Guanying","name":"观影|网盘|磁力","type":3,"api":"csp_Guanying","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.xn--74qz10cqsltibh40akss.com/$$$noproxy$$$1$$$./lib/guanying.txt$$$GUANYING$$$username$$$password"},
+		{"key":"Guanying","name":"观影|网盘|磁力","type":3,"api":"csp_Guanying","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.xn--74qz10cqsltibh40akss.com/$$$proxy$$$1$$$./lib/guanying.txt$$$GUANYING$$$username$$$password"},
 		{"key":"FourKZN","name":"4K指南|网盘|磁力","type":3,"api":"csp_FourKZN","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://4kzn.cc/$$$noproxy$$$1$$$./lib/4kzn.txt$$$4KZN"},
 		{"key":"校长影视","name":"校长影视|网盘","type":3,"api":"csp_XiaoZhang", "quickSearch":1, "changeable":1, "filterable":1, "timeout":60,"ext":"./lib/tokenm.json$$$https://xzyshd.com$$$proxy$$$1"},
 		{"key":"Wogg","name":"玩偶哥哥|网盘","type":3,"api":"csp_Wogg","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$http://wogg.888484.xyz/$$$noproxy$$$1$$$./lib/wogg.json$$$WOGG"},
-		{"key":"蜡笔网盘","name":"蜡笔|网盘","type":3,"api":"csp_Wobg","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://xiaocgege.shop/$$$noproxy$$$1$$$./lib/wogg.json$$$LABI"},
+		{"key":"蜡笔网盘","name":"蜡笔|网盘","type":3,"api":"csp_Wobg","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://xiaocgege.shop/$$$proxy$$$1$$$./lib/wogg.json$$$LABI"},
 		{
 			"key": "至臻|网盘",
 			"name": "至臻|网盘",
@@ -176,13 +178,9 @@
 			"timeout": 60,
 			"ext": "./lib/tokenm.json$$$https://mihdr.top/$$$noproxy$$$1$$$./lib/wogg.json$$$ZHIZHEN"
 		},
-		{"key": "盘链", "name": "盘链|网盘", "type": 3, "api": "csp_PingLian", "searchable": 1, "timeout": 60, "ext": "./lib/tokenm.json$$$https://pinglian.lol$$$$$$0$$$$$$PANLIAN$$$USER$$$PASS"},
-        {"key": "csp_Qwmp4", "name": "七味|网盘|磁力", "type": 3, "api": "csp_Qwmp4", "searchable": 1, "quickSearch": 1, "filterable": 0, "timeout": 60, "ext": "./lib/tokenm.json$$$https://www.qwmp4.com/$$$noproxy$$$0$$$$$QIWEI"},
-		{"key":"LIBVIO_","name":"LIBVIO|网盘_","type":3,"api":"csp_Libvio","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.libvio.io/$$$noproxy$$$1"},
-		{"key":"Moli_","name":"HDmoli|网盘_","type":3,"api":"csp_Moli","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.hdmoli.com/$$$noproxy$$$1$$$./lib/moli.json"},
-		{"key":"LIBVIO","name":"LIBVIO|网盘","type":3,"api":"csp_Libvio","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$http://www.libvio.mov/$$$noproxy$$$1"},
+		{"key":"LIBVIO","name":"LIBVIO|网盘","type":3,"api":"csp_Libvio","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.libvio.io/$$$noproxy$$$1"},
+		{"key":"Moli","name":"HDmoli|网盘","type":3,"api":"csp_Moli","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.hdmoli.com/$$$noproxy$$$1$$$./lib/moli.json"},
 		{"key":"Guazi","name":"瓜子|App","type":3,"api":"csp_Guazi","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":""},
-		{"key":"Moli","name":"HDmoli|网盘","type":3,"api":"csp_Moli","quickSearch":1, "changeable":1, "filterable":1, "timeout":60, "ext":"./lib/tokenm.json$$$https://www.hdmoli.pro/$$$proxy$$$1$$$./lib/moli.json"},
 		{"key":"美剧迷","name":"美剧迷|网盘","type":3,"api":"csp_Meijumi", "quickSearch":1, "changeable":1, "filterable":1, "timeout":120,"ext":"./lib/tokenm.json$$$https://www.meijumi.net/$$$proxy$$$1"},
 		{"key":"WebDAV","name":"WebDAV[jar]","type":3,"api":"csp_WebDAV","searchable":1,"filterable":1,"changeable":1,"timeout":60,
 			"playerType": 2,
@@ -528,6 +526,14 @@
 					"type": "append",
 					"source": "?livemode=4&starttime=${(b)yyyyMMdd'T'HHmm}00.00Z&endtime=${(e)yyyyMMdd'T'HHmm}00.00Z"
 				}
+			},
+			{
+				"name": "最强国内直播(真低码)",
+				"type": 0,
+				"url": "http://127.0.0.1:10079/c/3600/null/http://127.0.0.1:35456/ysptx.m3u",
+				"ua": "okhttp/3.15",
+				"epg": "http://127.0.0.1:10079/p/0/proxy/http://epg.112114.xyz/?ch={name}&date={date}",
+				"logo": "http://127.0.0.1:10079/p/0/proxy/https://epg.112114.xyz/logo/{name}.png"
 			},
 			{
 				"name": "最强国内直播(EPG-1天回看)",
