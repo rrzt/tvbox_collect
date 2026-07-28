@@ -426,13 +426,6 @@
     "searchable": 0
 },
 {
-    "key": "csp_XYQ_饭团",
-    "name": "🍙┃影視┃ 饭团",
-    "type": 3,
-    "api": "csp_XBPQ",
-    "ext": "https://ghproxy.net/https://raw.githubusercontent.com/LIUJEI/TB/master/XYQ/饭团.png"
-},
-{
     "name": "♨️┃短劇┃豪堪",
     "key": "HHkk",
     "type": 3,
