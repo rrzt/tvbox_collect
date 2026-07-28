@@ -188,22 +188,6 @@
             }
         },
         {
-            "key": "橙子",
-            "name": "🅰小橙子",
-            "type": 3,
-            "api": "csp_App99",
-            "ext": {
-                "host": "http://113.31.180.218:19987/app/bn",
-                "LoginPath": "/app/log",
-                "appkey": "6e8f3764a0644f3686ab5cdd57bcdf48",
-                "versionName": "4.3.1",
-                "name": "小橙子",
-                "package": "com.xchengzix.app",
-                "buildNumber": "2001",
-                "buildSignature": "99DA983CF878CEC016616175464A91A94775E20A489F07F76FCDEA1A0F2B6B45"
-            }
-        },
-        {
             "key": "剧圈",
             "name": "🅰剧圈圈",
             "type": 3,
@@ -252,6 +236,13 @@
                 "buildNumber": "2003",
                 "buildSignature": "054FA8DDA4319C6B6A9B954CA5777541C993F00B1B0BD4394F7EDE48184C4594"
             }
+        },
+        {
+            "key": "不戳",
+            "name": "💯不戳",
+            "type": 3,
+            "api": "csp_Xdai",
+            "ext": "7lj763gg402i7942503g9gj0hj4l9690l1k6j05liljj376l53510hklk92k492h109l6g85g15gh1g80l2889g0kgki21l5j56h7j69j68hi3jk0gh108i74ih11k10g8"
         },
         {
             "key": "首发",
