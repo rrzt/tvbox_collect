@@ -13,10 +13,10 @@
     "indexs" : 0
 },
 {
-    "key": "csp_yugao",
-    "name": "🎬┣新片┫预告",
+   "key": "csp_liuyun",
+    "name": 🎬┣琉璃┫影視",
     "type": 3,
-    "api": "csp_YGP",
+    "api": "./TS/琉璃.js",
     "indexs" : 0
 },
 {
@@ -559,7 +559,7 @@
     "name": "📻┃车载┃音乐",
     "type": 3,
     "api": "csp_Djuu",
-    "style": {"type": "list"}
+    "jar": "https://qist.ugigc.dpdns.org/xiaosa/spider.jar"
 },
 {
     "key": "QingtingFM",
@@ -678,6 +678,13 @@
     "dataIv": "66dc309cbeeca454"}
 },
 {
+    "key": "ConfigCenter",
+    "name": "💯┃配置┃中心",
+    "type": 3,
+    "api": "csp_Config",
+    "indexs": 0
+},
+{
     "key": "Wogg",
     "name": "💯┃玩偶┃4K臻享",
     "type": 3,
@@ -760,21 +767,30 @@
     "name": "💯┃移动┃4K臻享",
     "type": 3,
     "api": "csp_Yidong4K",
+    "jar": "https://qist.ugigc.dpdns.org/xiaosa/spider.jar"
+},
+{
+    "key": "指南",
+    "name": "💯┃指南┃4K臻享",
+    "type": 3,
+    "api": "csp_4KZhinan",
     "timeout": 60
 },
 {
-    "key": "ConfigCenter",
-    "name": "🇨🇳┣☪配✿置┫辅助",
+    "key": "csp_Notice",
+    "name": "🇨🇳┣☪公✿告┫信息",
     "type": 3,
-    "api": "csp_Config",
-    "style": {"type": "rect","ratio": 1.597}
+    "api": "csp_Notice",
+    "jar": "https://gitee.com/lyun_1_0/tb/raw/master/lib/liuli.php",
+    "ext": "https://gitee.com/lyun_1_0/tb/raw/master/lib/公告.php"
 },
 {
-     "key": "csp_liuyun",
-    "name": "🇨🇳┣☪琉✿璃┫影視",
+    "key": "csp_Market",
+    "name": "🇨🇳┣☪版✿本┫信息",
     "type": 3,
-    "api": "./TS/琉璃.js",
-    "indexs" : 0
+    "api": "csp_Market",
+    "indexs": 0,
+    "ext": "https://gitee.com/lyun_1_0/tb/raw/master/lib/single.png"
 }
 ],
 "parses": [	
