@@ -174,7 +174,7 @@
    "quickSearch": 1,
    "filterable": 1,
    "timeout": 60,
-   "ext": "./lib/tokenm.json$$$https://zmi.kdns.fr/$$$proxy$$$1$$$$$$WONIU"
+   "ext": "./lib/tokenm.json$$$https://zmi.kdns.fr/$$$noproxy$$$1$$$$$$WONIU$$$USER$$$PASS$$$./lib/woniu.txt"
   },
   {
    "key": "Mogg",
@@ -239,17 +239,6 @@
    "filterable": 1,
    "timeout": 60,
    "ext": "./lib/token.json$$$https://share.huamucang.top/$$$noproxy$$$1$$$./lib/huamucang.txt$$$HUAMUCANG$$$USER$$$PASS"
-  },
-  {
-   "key": "Hema4k",
-   "name": "盒马|网盘|磁力",
-   "type": 3,
-   "api": "csp_Hema4k",
-   "quickSearch": 1,
-   "changeable": 1,
-   "filterable": 1,
-   "timeout": 60,
-   "ext": "./lib/tokenm.json$$$https://www.hema4k.com/$$$proxy$$$1$$$./lib/hema4k.txt$$$HEMA4K"
   },
   {
    "key": "Guanying",
