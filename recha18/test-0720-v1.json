@@ -4,6 +4,23 @@
   "wallpaper": "https://gitlab.com/tenrecha/recha/-/raw/main/background.jpg",
   "notice": "115.07.20 ver.3 加入嗷嗚漫劇",
   "sites": [ 
+    {    
+             "key":"csp_AppQi_爱影",
+             "name":"[AppQi]┃爱影",
+             "type":3,
+             "api":"csp_AppQi",
+             "jar":"./jar/愛影.jar",
+             "searchable":1,"quickSearch":1,
+             "filterable":1,
+             "changeable":1,
+             "ext":{"url":"http://222.211.75.252:16118",
+             "dataKey":"0UKM8jkasM8tdzgW",
+             "dataIv":"0UKM8jkasM8tdzgW",
+             "init":"initV122",
+            "search":"mineInfo",
+            "ua":"okhttp/3.10.0"
+        }
+        },
     		{
             "key":"youtube",
             "name":"youtube",
