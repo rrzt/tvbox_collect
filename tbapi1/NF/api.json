@@ -936,19 +936,6 @@
             }
         },
         {
-            "key": "蜗牛",
-            "name": "🐌蜗牛",
-            "type": 3,
-            "api": "csp_WoNiu",
-            "searchable": 1,
-            "changeable": 0,
-            "ext": {
-                "commonConfig": "./json/peizhi.json",
-                "siteUrl": "https://zmi.kdns.fr/",
-                "filter": "./json/wogg.json"
-            }
-        },
-        {
             "key": "光鸭社区",
             "name": "🦆光鸭社区",
             "type": 3,
