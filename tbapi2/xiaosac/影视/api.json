@@ -246,22 +246,6 @@
             "ext": "https://qpcj.69mini.com/api.php/app/"
         },
         {
-            "key": "金牌",
-            "name": "金牌 • APP",
-            "type": 3,
-            "api": "csp_AppQi",
-            "searchable": 1,
-            "changeable": 1,
-            "ext": {
-                "url": "https://qj4.catbb.xyz",
-                "dataKey": "eecbio48dsq13kkk",
-                "dataIv": "eecbio48dsq13kkk",
-                "search": "searchList4",
-                "init": "initV122",
-                "ua": "okhttp/3.10.0"
-            }
-        },
-        {
             "key": "蓝鹰",
             "name": "蓝鹰 • APP",
             "type": 3,
@@ -274,34 +258,6 @@
                 "dataIv": "ca94b06ca359d80e",
                 "init": "initV120",
                 "ua": "okhttp/3.10.0"
-            }
-        },
-        {
-            "key": "高清",
-            "name": "高清 • APP",
-            "type": 3,
-            "api": "csp_AppQi",
-            "searchable": 1,
-            "changeable": 1,
-            "ext": {
-                "site": "https://yun-1316442804.cos.ap-guangzhou.myqcloud.com/602.txt",
-                "dataKey": "FTgP4Gq8zPiqbt7M",
-                "dataIv": "FTgP4Gq8zPiqbt7M",
-                "init": "initV120",
-                "ua": "okhttp/3.10.0"
-            }
-        },
-        {
-            "key": "麻花",
-            "name": "麻花 • APP",
-            "type": 3,
-            "api": "csp_AppGet",
-            "searchable": 1,
-            "changeable": 1,
-            "ext": {
-                "url": "http://150.158.123.62:130",
-                "dataKey": "q7gj4f9br3fls6nh",
-                "dataIv": "q7gj4f9br3fls6nh"
             }
         },
         {
@@ -357,6 +313,24 @@
             }
         },
         {
+            "key": "哔哩合集",
+            "name": "哔哩 • 合集",
+            "type": 3,
+            "api": "csp_Bili",
+            "searchable": 1,
+            "quickSearch": 0,
+            "filterable": 0,
+            "changeable": 0,
+            "style": {
+                "type": "rect",
+                "ratio": 1.433
+            },
+            "ext": {
+                "n": "哔哩合集",
+                "cookie": "http://127.0.0.1:9978/file/TVBox/bili_cookie.txt"
+            }
+        },
+        {
             "key": "哔哩视频",
             "name": "哔哩 • 视频",
             "type": 3,
@@ -380,22 +354,37 @@
             "api": "csp_SP360"
         },
         {
-            "key": "哔哩合集",
-            "name": "哔哩 • 合集",
+            "key": "七猫短剧",
+            "name": "七猫 • 短剧",
             "type": 3,
-            "api": "csp_Bili",
+            "api": "csp_QimaoDJ",
             "searchable": 1,
-            "quickSearch": 0,
-            "filterable": 0,
-            "changeable": 0,
-            "style": {
-                "type": "rect",
-                "ratio": 1.433
-            },
-            "ext": {
-                "n": "哔哩合集",
-                "cookie": "http://127.0.0.1:9978/file/TVBox/bili_cookie.txt"
-            }
+            "changeable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "genre": "shortdrama"
+        },
+        {
+            "key": "河马短剧",
+            "name": "河马 • 短剧",
+            "type": 3,
+            "api": "csp_HemaDJ",
+            "searchable": 1,
+            "changeable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "genre": "shortdrama"
+        },
+        {
+            "key": "围观短剧",
+            "name": "围观 • 短剧",
+            "type": 3,
+            "api": "csp_WeiguanDJ",
+            "searchable": 1,
+            "changeable": 1,
+            "quickSearch": 1,
+            "filterable": 1,
+            "genre": "shortdrama"
         },
         {
             "key": "好看短剧",

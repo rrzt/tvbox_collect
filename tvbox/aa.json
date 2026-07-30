@@ -48,7 +48,8 @@
     "ratio": 1.33
    },
    "ext": {
-    "count": "./lib/yt2.json"
+    "count": "./lib/yt2.json",
+    "cookie": ""
    },
    "filterable": 1
   },

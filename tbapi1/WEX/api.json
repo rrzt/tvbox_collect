@@ -16,7 +16,7 @@
     },
     {
       "key": "Doubanaaaa",
-      "name": "🐮【更新日期:20260727-1】🐮",
+      "name": "🐮【更新日期:20260729-1】🐮",
       "type": 3,
       "api": "csp_NewDouBanGuard",
       "indexs": 1,
@@ -162,6 +162,15 @@
       "name": "💓‍原盘┃4K💓‍",
       "type": 3,
       "api": "csp_AiNewZhiNan4KGuard",
+      "searchable": 1,
+      "quickSearch": 1,
+      "changeable": 0
+    },
+    {
+      "key": "蜗牛",
+      "name": "💓‍蜗牛┃4K💓‍",
+      "type": 3,
+      "api": "csp_AiNewWoNiu4KGuard",
       "searchable": 1,
       "quickSearch": 1,
       "changeable": 0
