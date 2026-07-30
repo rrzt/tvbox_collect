@@ -410,47 +410,51 @@ echo -e '12345678\n12345678' | passwd root
 
 ### 2. AdGuard Home 配置
 - ① 引导设置
-  - ➊ 打开网页 <http://192.168.31.1:3000> 后点击“开始配置”
-  - ➋ **“网页管理界面端口”输入 `3000`，“DNS 服务器端口”输入“5353”**，点击“下一步”  
-  - ➌ “身份认证”设置用户名和密码
-  - ➍ 点击“打开仪表盘”后输入刚才设置的用户名和密码“登入”，就可以进入 AdGuard Home 管理页面
-- ② 进入设置 → 常规设置，取消勾选“启用日志”并点击“保存”（日志非常占用空间）
+  - ➊ 打开网页 <http://192.168.31.1:3000> 后点击“运行向导”
+  - ➋ “设置密码保护”设置用户名和密码
+  - ➌ Web UI 设置 → 端口，输入 `3000`，点击“下一步”  
+  - ➍ DNS 服务器设置 → 端口，输入 `5353`，点击“下一步”  
+  - ➎ “设备类型”保持默认的“路由器”，直接点击“下一步”  
+  - ➏ 点击“打开仪表盘”后输入刚才设置的用户名和密码“登录”，就可以进入 AdGuard Home 管理页面
+- ② 进入设置 → General，关闭“查询日志”（日志非常占用空间）
 - ③ DNS 设置
-  - ➊ 进入设置 → DNS 设置，“上游 DNS 服务器”设置为 `localhost:1053`，并选择“并行请求”
+  - ➊ 进入设置 → DNS → 上游 DNS 服务器，点击“上游模式”后选择“并行请求”并“保存”
+  - ➋ 点击“服务器地址”，输入 `localhost:1053` 并“保存”
     - 注：此时页面右下角可能会弹出报错信息，但不用理会
 
     <img src="/assets/img/pin/adguardhome-up-dns.png" alt="AdGuard Home 配置 1" width="60%" />
 
-  - ➋ “后备 DNS 服务器”设置为：
+  - ➌ 点击“后备 DNS 服务器”，输入如下内容并“保存”：
 
-  ```text
-  quic://dns.alidns.com:853
-  https://doh.pub/dns-query
-  ```
+    ```text
+    quic://dns.alidns.com:853
+    https://doh.pub/dns-query
+    ```
 
-  - ➌ “Bootstrap DNS 服务器”设置为：
+    <img src="/assets/img/pin/adguardhome-fallback-dns.png" alt="AdGuard Home 配置 2" width="60%" />
 
-  ```text
-  223.5.5.5
-  119.29.29.29
-  ```
+  - ➍ 点击“Bootstrap DNS 服务器”，输入如下内容并“保存”：
 
-  - ➍ 直接点击“应用”即可  
-    <img src="/assets/img/pin/adguardhome-dns.png" alt="AdGuard Home 配置 2" width="60%" />
+    ```text
+    223.5.5.5
+    119.29.29.29
+    ```
 
-  - ➎ “速度限制”输入“0”，然后点击下方的“保存”  
-    <img src="/assets/img/pin/adguardhome-dns-service.png" alt="AdGuard Home 配置 3" width="60%" />
+    <img src="/assets/img/pin/adguardhome-bootstrap-dns.png" alt="AdGuard Home 配置 3" width="60%" />
 
-  - ➏ 勾选“乐观缓存”，并点击“保存”  
-    <img src="/assets/img/pin/adguardhome-cache.png" alt="AdGuard Home 配置 4" width="60%" />
+  - ➎ 进入 DNS 服务配置，点击“速度限制”，输入 `0` 并“保存”  
+    <img src="/assets/img/pin/adguardhome-dns-service.png" alt="AdGuard Home 配置 4" width="60%" />
 
-- ④ 进入过滤器 → DNS 黑名单 → 添加黑名单 → 从列表中选择，推荐勾选“区域”里的“CHN: anti-AD”，然后点击“保存”
-  - 注：若等待 10 分钟仍下载失败，可手动将下载地址 URL 更改为 `https://anti-ad.net/easylist.txt`
+  - ➏ 启用“乐观缓存”  
+    <img src="/assets/img/pin/adguardhome-cache.png" alt="AdGuard Home 配置 5" width="60%" />
 
-  <img src="/assets/img/pin/adguardhome-blacklist.png" alt="AdGuard Home 配置 5" width="60%" />
+- ④ 进入过滤器 → 拦截列表 → 添加黑名单 → 从列表添加，推荐勾选“区域”里的“CHN: anti-AD”，然后点击“添加”
+  - 注：若等待 10 分钟仍下载失败，可手动将“URL 或文件路径”修改为 `https://anti-ad.net/easylist.txt`
+
+  <img src="/assets/img/pin/adguardhome-blacklist.png" alt="AdGuard Home 配置 6" width="60%" />
 
   添加成功  
-  <img src="/assets/img/pin/adguardhome-blacklist-success.png" alt="AdGuard Home 配置 6" width="60%" />
+  <img src="/assets/img/pin/adguardhome-blacklist-success.png" alt="AdGuard Home 配置 7" width="60%" />
 
 **配置 AdGuard Home 成功！**
 

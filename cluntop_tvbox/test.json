@@ -1,36 +1,29 @@
 {
  "sites": [
   {
-   "key": "py_ddys",
-   "name": "低端影视|PY",
+   "key": "py_xlys",
+   "name": "雪落影视|PY",
    "type": 3,
-   "api": "./py/ddys.py",
+   "api": "./py/xlys.py",
    "searchable": 1,
    "quickSearch": 1,
-   "filterable": 0,
-   "ext": "{\"host\":\"https://www.ddys.run\",\"cookie\":\"pageLogin=ok\"}"
+   "filterable": 1,
+   "ext": {
+    "host": "https://v.xl.in.ua",
+    "pageFmt": ""
+   }
   },
   {
-   "key": "ptt",
-   "name": "PTT | PY",
+   "key": "py_ddmf",
+   "name": "蛋蛋影视[py]",
    "type": 3,
-   "api": "./py/ptt_red.py",
+   "api": "./py/ddmf.py",
    "searchable": 1,
    "quickSearch": 1,
-   "style": {
-    "type": "rect",
-    "ratio": 1.33
-   },
-   "ext": "{\"relay\":\"\",\"lang\":\"\",\"ua\":\"\",\"cookie\":\"\"}",
-   "filterable": 1
+   "filterable": 1,
+   "ext": "{\"host\":\"https://www.ddmf.net\",\"pageFmt\":\"\"}"
   },
-  {
-   "key": "爱看",
-   "name": "爱看影视",
-   "type": 3,
-   "api": "csp_XBPQ",
-   "ext": "./js/s/爱看.json"
-  }
+  null
  ],
  "spider": "./jar/yt.jar",
  "logo": "./img/pg.gif"

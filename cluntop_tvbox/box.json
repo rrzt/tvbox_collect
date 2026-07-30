@@ -55,7 +55,7 @@
   {
    "key": "py_dsystv",
    "name": "袋鼠影视[py]",
-   "type": 4,
+   "type": 3,
    "api": "./py/dsystv.py",
    "searchable": 1,
    "quickSearch": 1,
@@ -72,16 +72,7 @@
    "filterable": 1,
    "ext": "{\"host\":\"https://ysttv.com\",\"pageFmt\":\"\",\"searchFmt\":\"\"}"
   },
-  {
-   "key": "py_ddys",
-   "name": "低端影视[py]",
-   "type": 3,
-   "api": "./py/ddys.py",
-   "searchable": 1,
-   "quickSearch": 1,
-   "filterable": 0,
-   "ext": "{\"host\":\"https://www.ddys.run\",\"cookie\":\"pageLogin=ok\"}"
-  },
+  
   {
    "key": "1",
    "name": "--- 1 ---"
