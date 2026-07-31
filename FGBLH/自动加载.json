@@ -9,18 +9,6 @@
           "name": "🐬自动加载.py",
           "type": 3,
           "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/自动加载.py"
-    },
-    {
-          "key": "hanime1",
-          "name": "🐬hanime1动漫.py🔞",
-          "type": 3,
-          "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/hanime1.py"
-    },
-    {
-          "key": "男同网",
-          "name": "🐬男同网.py",
-          "type": 3,
-          "api": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/py/男同网.py"
     }
     ],
     "parses": [ 
@@ -149,23 +137,6 @@
         "static-mozai.4gtv.tv"
     ],	
 		"lives": [
-		{
-           "name": "🐬海豚佬🔞午夜剧场(挂梯)",
-           "type": 0,
-           "playerType": 2,
-           "epg": "https://epg.112114.xyz/?ch={name}&date={date}",
-           "logo": "https://epg.112114.xyz/logo/{name}.png",
-           "url": "https://gh-proxy.com/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/午夜剧场.txt",
-           "header": {
-            "X-Api-key": "8692bd33270440d4d2941b814b81a25a1eb84a7205532971714c4299c57449e0..0..1738210005..5cf2c4ad-043b-4234-83a2-e84ae917"
-        }
-		},
-	    {
-            "name": "🐬海豚佬xxx视频资源🔞",
-            "type": 0,
-            "ua": "okhttp",
-            "url": "https://ghfast.top/https://raw.githubusercontent.com/FGBLH/HKL/refs/heads/main/xxx视频资源.txt"
-        }
 		],
 	  "ijk": [
 	  {
