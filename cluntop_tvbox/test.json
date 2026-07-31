@@ -1,6 +1,15 @@
 {
  "sites": [
   {
+   "key": "py_fqdm",
+   "name": "影视|PY",
+   "type": 3,
+   "api": "./py/fqdm.py",
+   "searchable": 1,
+   "quickSearch": 1,
+   "filterable": 1
+  },
+  {
    "key": "py_xlys",
    "name": "雪落影视|PY",
    "type": 3,
@@ -22,8 +31,7 @@
    "quickSearch": 1,
    "filterable": 1,
    "ext": "{\"host\":\"https://www.ddmf.net\",\"pageFmt\":\"\"}"
-  },
-  null
+  }
  ],
  "spider": "./jar/yt.jar",
  "logo": "./img/pg.gif"
