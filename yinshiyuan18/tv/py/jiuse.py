@@ -103,13 +103,15 @@ class Spider(Spider):
             'vod_remarks': '',
             'vod_content': '',
             'vod_play_from': '九色直连',
-            'vod_play_url': f'高清原画${page_url}'
+            'vod_play_url': f'高清原画${page_url}' # 默认兜底，如果解析成功会替换
         }
         
         try:
             rsp = self.fetch(page_url, headers=self.headers)
-            soup = BeautifulSoup(rsp.text, 'html.parser')
+            html_text = rsp.text
+            soup = BeautifulSoup(html_text, 'html.parser')
             
+            # 1. 基础 Meta 信息解析
             meta_title = soup.select_one('meta[property="og:title"]')
             if meta_title and meta_title.get('content'):
                 vod['vod_name'] = meta_title['content'].strip()
@@ -125,6 +127,24 @@ class Spider(Spider):
             meta_desc = soup.select_one('meta[property="og:description"]')
             if meta_desc and meta_desc.get('content'):
                 vod['vod_content'] = meta_desc['content'].strip()
+
+            # 2. 【核心优化】在详情页提前解析出真实 m3u8 播放地址，实现秒播
+            real_m3u8 = None
+            video_tag = soup.select_one('video#video-play') or soup.select_one('video[data-src]')
+            if video_tag and video_tag.get('data-src'):
+                real_m3u8 = video_tag.get('data-src')
+
+            if not real_m3u8:
+                match = re.search(r'id=["\']video-play["\'][^>]*data-src=["\']([^"\']+)["\']', html_text)
+                if not match:
+                    match = re.search(r'data-src=["\']([^"\']+\.m3u8[^"\']*)["\']', html_text)
+                if match:
+                    real_m3u8 = match.group(1)
+
+            if real_m3u8:
+                real_m3u8 = html.unescape(real_m3u8)
+                # 如果成功获取 m3u8 直链，直接写入 play_url，省去 playerContent 的二次请求
+                vod['vod_play_url'] = f'高清原画${real_m3u8}'
 
         except Exception as e:
             pass
@@ -155,7 +175,8 @@ class Spider(Spider):
         return result
 
     def playerContent(self, flag, id, vipFlags):
-        page_url = id if id.startswith('http') else f"{self.site_url}{id}"
+        # 如果详情页未能提前解析出直链，id 会传过来页面链接，这里保留兜底解析
+        play_url = id if id.startswith('http') else f"{self.site_url}{id}"
         
         result = {
             "parse": 0,
@@ -167,19 +188,22 @@ class Spider(Spider):
             }
         }
         
+        # 如果 id 本身已经是 m3u8 地址，直接返回播放
+        if '.m3u8' in play_url:
+            result["url"] = play_url
+            return result
+
+        # 兜底：如果传来的还是网页链接，则再次尝试解析
         try:
-            rsp = self.fetch(page_url, headers=self.headers)
+            rsp = self.fetch(play_url, headers=self.headers)
             html_text = rsp.text
             soup = BeautifulSoup(html_text, 'html.parser')
             
             real_m3u8 = None
-
-            # 1. 优先精准抓取 <video id="video-play"> 的 data-src 属性
             video_tag = soup.select_one('video#video-play') or soup.select_one('video[data-src]')
             if video_tag and video_tag.get('data-src'):
                 real_m3u8 = video_tag.get('data-src')
 
-            # 2. 如果没获取到，用正则匹配
             if not real_m3u8:
                 match = re.search(r'id=["\']video-play["\'][^>]*data-src=["\']([^"\']+)["\']', html_text)
                 if not match:
@@ -187,17 +211,15 @@ class Spider(Spider):
                 if match:
                     real_m3u8 = match.group(1)
 
-            # 3. 还原 HTML 转义字符 (&amp; -> &)
             if real_m3u8:
-                real_m3u8 = html.unescape(real_m3u8)
-                result["url"] = real_m3u8
+                result["url"] = html.unescape(real_m3u8)
             else:
                 result["parse"] = 1
-                result["url"] = page_url
+                result["url"] = play_url
                 
         except Exception as e:
             result["parse"] = 1
-            result["url"] = page_url
+            result["url"] = play_url
 
         return result
 
@@ -216,7 +238,6 @@ class Spider(Spider):
                 return None
             href = a_node['href']
             
-            # 【核心修改】将 viewhd 替换成 view
             if '/viewhd/' in href:
                 href = href.replace('/viewhd/', '/view/')
                 

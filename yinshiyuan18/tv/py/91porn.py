@@ -6,37 +6,41 @@ import requests
 import json
 from pyquery import PyQuery as pq
 import time
-import random
 
 sys.path.append('..')
 from base.spider import Spider
 
 class Spider(Spider):
     def __init__(self):
-        self.name = '91pron[密]'
-        self.host = 'https://0601.9p47p.com'
-        self.candidate_hosts = ['https://0601.9p47p.com']
-        self.ev_hosts = ['https://91.9p9.xyz', 'https://0601.9p47p.com']
+        self.name = '91pron'
+        self.host = 'https://0708.fs708.com/'
         self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Referer': 'https://duckduckgo.com/'
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 15; 2407FRK8EC Build/AP3A.240617.008; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/128.0.6613.127 Mobile Safari/537.36',
+            'Origin': self.host.rstrip('/'),
+            'Referer': self.host,
+            'Accept-Language': 'zh-CN,zh;q=0.9'
         }
         self.cookies = {'language': 'cn_CN', 'over18': '1'}
         self.class_map = {
-            '91原创': 'ori', '当前最热': 'hot', '本月最热': 'top',
-            '非付费': 'nonpaid', '10分钟以上': 'long', '20分钟以上': 'longer',
-            '本月收藏': 'tf', '最近加精': 'rf', '高清': 'hd',
-            '本月讨论': 'md', '收藏最多': 'mf'
+            '最新': 'watch',
+            '91原创': 'ori',
+            '当前最热': 'hot',
+            '本月最热': 'top',
+            '10分钟以上': 'long',
+            '20分钟以上': 'longer',
+            '本月收藏': 'tf',
+            '最近加精': 'rf',
+            '高清': 'hd',
+            '每月最热': 'top_m',  # 优化：转换为内部标识，在 categoryContent 中独立处理参数
+            '本月讨论': 'md',
+            '收藏最多': 'mf'
         }
 
     def getName(self):
         return self.name
 
     def init(self, extend=""):
-        self.host = self._pick_working_host()
-        self.headers['Referer'] = self.host
+        pass
 
     def isVideoFormat(self, url):
         return any(ext in (url or '') for ext in ['.m3u8', '.mp4', '.ts'])
@@ -44,42 +48,40 @@ class Spider(Spider):
     def manualVideoCheck(self):
         return False
 
-    def _pick_working_host(self):
-        for h in self.candidate_hosts:
-            try:
-                r = requests.get(f"{h}/v.php?category=ori&viewtype=basic&page=1", 
-                                 headers=self.headers, cookies=self.cookies, timeout=6)
-                if r.status_code == 200 and 'page=' in r.text:
-                    return h
-            except:
-                pass
-        return self.candidate_hosts[0]
-
     def _abs_href(self, href):
         if not href:
             return ''
         if href.startswith('http'):
-            return re.sub(r'^https?://[^/]+', self.host, href)
+            return href
         return f"{self.host.rstrip('/')}/{href.lstrip('/')}"
 
     def _parse_video_items(self, data):
         vlist = []
-        # 精准匹配搜索页及分类页的视频卡片容器
-        for item in data('.col-xs-12.col-sm-4.col-md-3.col-lg-3').items():
+        # 优化：放宽选择器，兼容各种响应式网格及卡片容器
+        for item in data('.well.well-sm.videos-text-align, div[class*="col-xs-12"][class*="col-sm"]').items():
             try:
-                title = item('.video-title').text().strip()
+                title_elem = item('span[class="video-title title-truncate m-t-5"], .video-title')
+                title = title_elem.text().strip()
                 if not title:
                     continue
-                pic = item('.img-responsive').attr('src') or ''
-                pic = f"{self.host.rstrip('/')}/{pic.lstrip('/')}" if pic and not pic.startswith('http') else pic
-                href = self._abs_href(item('a').attr('href'))
+                pic_elem = item('img')
+                pic = pic_elem.attr('src') or pic_elem.attr('data-original') or ''
+                pic = self._abs_href(pic) if pic else ''
+                
+                a_elem = item('a')
+                href = self._abs_href(a_elem.attr('href'))
+                
+                duration = item('.duration').text().strip() or '未知'
+                
                 if href:
-                    vlist.append({
-                        'vod_id': href,
-                        'vod_name': title,
-                        'vod_pic': pic,
-                        'vod_remarks': item('.duration').text().strip() or '未知'
-                    })
+                    # 去重处理，避免响应式导致同一视频重复抓取
+                    if not any(v['vod_id'] == href for v in vlist):
+                        vlist.append({
+                            'vod_id': href,
+                            'vod_name': title,
+                            'vod_pic': pic,
+                            'vod_remarks': duration
+                        })
             except:
                 continue
         return vlist
@@ -91,31 +93,16 @@ class Spider(Spider):
             if nums:
                 return max(nums)
             page_nums = [int(a.text().strip()) 
-                         for a in data('.pagination li a').items() 
+                         for a in data('.pagination li a, .pagingnav a').items() 
                          if a.text().strip().isdigit()]
             return max(page_nums) if page_nums else 1
         except:
             return 1
 
-    def _extract_tags(self, html):
-        tags, data = [], pq(html)
-        keywords = data('meta[name="keywords"]').attr('content') or ''
-        if keywords:
-            tags.extend(t.strip() for t in keywords.split(',') if t.strip())
-        for link in data('a').items():
-            href, text = link.attr('href') or '', link.text().strip()
-            if any(p in href for p in ['category=', 'tag=', 'keyword=', '/tags/', '/category/']) and text and len(text) < 50:
-                tags.append(text)
-        for container in data('[class*="tag"], [class*="label"], [class*="category"]').items():
-            text = container.text().strip()
-            if text and len(text) < 50:
-                tags.append(text)
-        return list(dict.fromkeys(tags))
-
     def homeContent(self, filter):
         result = {'class': [{'type_name': k, 'type_id': v} for k, v in self.class_map.items()]}
         try:
-            html = self._fetch(f"{self.host}/v.php?category=ori&viewtype=basic&page=1&cn_CN=cn_CN").text
+            html = self._fetch(f"{self.host}index.php").text
             result['list'] = self._parse_video_items(pq(html))
         except:
             result['list'] = []
@@ -127,19 +114,19 @@ class Spider(Spider):
     def categoryContent(self, tid, pg, filter, extend):
         pg = int(pg or 1)
         try:
-            if tid.startswith('author:'):
-                uid = tid.split(':', 1)[1].strip()
-                if not uid:
-                    raise ValueError("无效作者UID")
-                html = self._fetch(f"{self.host}/uvideos.php", params={'UID': uid, 'type': 'public', 'page': pg}).text
+            # 优化：处理带特殊参数的分类（如每月最热需要 &m=-1）
+            if tid == 'top_m':
+                url = f"{self.host}v.php?category=top&m=-1&viewtype=basic&page={pg}"
             else:
-                html = self._fetch(f"{self.host}/v.php?category={tid}&viewtype=basic&page={pg}&cn_CN=cn_CN").text
+                url = f"{self.host}v.php?category={tid}&viewtype=basic&page={pg}"
+                
+            html = self._fetch(url).text
             data = pq(html)
             return {
                 'list': self._parse_video_items(data),
                 'page': pg,
                 'pagecount': self._parse_pagecount(data),
-                'limit': 6,
+                'limit': 24,
                 'total': 999999
             }
         except:
@@ -163,7 +150,7 @@ class Spider(Spider):
         if matches := re.findall(r'(https?://[^"\'\s<>]+/ev\.php\?VID=[a-zA-Z0-9]+)', html, re.I):
             return matches[0]
         if vid := self._extract_vid(html) or self._extract_vid(detail_url):
-            return f"{self.ev_hosts[0]}/ev.php?VID={vid}"
+            return f"{self.host}ev.php?VID={vid}"
         return None
 
     def _get_mp4_url(self, ev_url):
@@ -183,6 +170,8 @@ class Spider(Spider):
                 for url in all_mp4:
                     if 'cdn77' in url and len(url) > 100:
                         return url.replace('&amp;', '&')
+            if m_src := re.search(r'src\s*:\s*["\'](https?://[^"\']+\.mp4[^"\']*)["\']', html, re.I):
+                return m_src.group(1).replace('&amp;', '&')
             return None
         except:
             return None
@@ -191,43 +180,48 @@ class Spider(Spider):
         if not ids or not ids[0]:
             return {'list': []}
         vod_id = ids[0].strip()
-        detail_url = vod_id if vod_id.startswith('http') else f"{self.host}/{vod_id.lstrip('/')}"
+        detail_url = vod_id if vod_id.startswith('http') else f"{self.host.rstrip('/')}/{vod_id.lstrip('/')}"
         try:
             html = self._fetch(detail_url).text
         except:
             return {'list': []}
+        
         ev_url = self._get_ev_url(html, detail_url)
         mp4_url = self._get_mp4_url(ev_url) if ev_url else None
         video_url = mp4_url if (mp4_url and 'secure=' in mp4_url) else (ev_url or detail_url)
+        
         data = pq(html)
         title = data('title').text().strip().split('Chinese homemade video')[0].strip() or '未知标题'
         pic = (data('meta[property="og:image"]').attr('content') or
                data('.video-pic img, img.img-responsive').attr('src') or '')
-        pic = f"{self.host.rstrip('/')}/{pic.lstrip('/')}" if pic and not pic.startswith('http') else pic
-        director = '未知'
-        author_link = data('.title-yakov').find('a[href*="uprofile.php"]')
-        if author_link:
-            name = author_link.find('.title').text().strip() or author_link.text().strip()
-            if m := re.search(r'UID=([^&\'"]+)', author_link.attr('href') or ''):
-                director = f'[a=cr:{json.dumps({"id": f"author:{m.group(1)}", "name": name})}/]{name}[/a]'
-        duration = views = '未知'
-        for span in data('span.info').items():
-            if '热度' in span.text() or '观看' in span.text():
+        pic = self._abs_href(pic) if pic else ''
+        
+        director = '飞鱼'
+        views = '未知'
+        duration = '未知'
+        
+        # 优化：通过正则直接在整页匹配时长与热度，防止因为容器类名变动而失效
+        if m_dur := re.search(r'\d{2}:\d{2}:\d{2}|\d{2}:\d{2}', html):
+            duration = m_dur.group(0)
+            
+        main_box = data('div[class*="col-md-8"], .col-xs-12')
+        for span in main_box.find('span.info').items():
+            txt = span.text()
+            if '热度' in txt or '观看' in txt:
                 if m := re.search(r'[\d]+', span.parent().text().strip()):
                     views = m.group(0)
-        if duration_elem := data('.duration'):
-            if durations := re.findall(r'\d{2}:\d{2}:\d{2}|\d{2}:\d{2}', duration_elem.text()):
-                duration = ' '.join(durations)
+
         remarks = f"{duration} | 观看:{views}" if views != '未知' else duration
+        
         return {'list': [{
             'vod_id': vod_id,
             'vod_name': title,
             'vod_pic': pic,
-            'vod_play_from': '默认线路',
-            'vod_play_url': f'正片${video_url}',
+            'vod_play_from': '飞鱼',
+            'vod_play_url': f'高清${video_url}',
             'vod_director': director,
-            'vod_tag': '|'.join(self._extract_tags(html)),
-            'vod_remarks': remarks
+            'vod_remarks': remarks,
+            'vod_content': title
         }]}
 
     def searchContent(self, key, quick, pg=1):
@@ -236,7 +230,7 @@ class Spider(Spider):
             return {'list': [], 'page': pg, 'pagecount': 1, 'limit': 0, 'total': 0}
         try:
             encoded_key = urllib.parse.quote(key.strip())
-            url = f"{self.host}/search_result.php?search_id={encoded_key}&page={pg}"
+            url = f"{self.host}search_result.php?search_id={encoded_key}&search_type=search_videos&min_duration=&page={pg}"
             
             html = self._fetch(url).text
             data = pq(html)
@@ -269,18 +263,9 @@ class Spider(Spider):
         }
 
     def localProxy(self, param):
-        try:
-            if param.get('type') == 'img':
-                url = param.get('url', '')
-                url = f"{self.host.rstrip('/')}/{url.lstrip('/')}" if url and not url.startswith(('http://', 'https://')) else url
-                headers = {**self.headers, 'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8'}
-                res = self._fetch(url, headers=headers)
-                return [200, res.headers.get('Content-Type', 'image/jpeg'), res.content]
-            return [404, 'text/plain', '']
-        except:
-            return [500, 'text/plain', '']
+        return [404, 'text/plain', '']
 
-    def _fetch(self, url, params=None, headers=None, timeout=8):
+    def _fetch(self, url, params=None, headers=None, timeout=15):
         for i in range(2):
             try:
                 resp = requests.get(
@@ -289,7 +274,8 @@ class Spider(Spider):
                     cookies=self.cookies,
                     timeout=timeout,
                     allow_redirects=True,
-                    params=params or {}
+                    params=params or {},
+                    verify=False
                 )
                 if resp.status_code in (200, 301, 302):
                     resp.encoding = resp.apparent_encoding or 'utf-8'
