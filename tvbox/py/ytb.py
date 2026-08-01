@@ -6,8 +6,6 @@ import sys
 import json
 import html
 import time
-import socket
-import hashlib
 from urllib.parse import quote, unquote, parse_qs, urlencode, urlparse, urlunparse, urljoin
 
 import requests
@@ -16,15 +14,8 @@ from base.spider import Spider
 sys.path.append('..')
 
 # ---------- 日志路径 ----------
-# 置空 = 关闭日志(不再每次调用都抛 NameError)
-# 需要排障时改成: 
-DEBUG_LOG = '/storage/emulated/0/源码/ytb_debug.log'
-#DEBUG_LOG = ''
-
-
+# DEBUG_LOG = '/storage/emulated/0/源码/ytb_debug.log'
 def _ensure_log_dir():
-    if not DEBUG_LOG:
-        return
     try:
         log_dir = os.path.dirname(DEBUG_LOG)
         if log_dir and not os.path.exists(log_dir):
@@ -34,8 +25,6 @@ def _ensure_log_dir():
 _ensure_log_dir()
 
 def debug_log(message, data=None):
-    if not DEBUG_LOG:
-        return
     try:
         log_dir = os.path.dirname(DEBUG_LOG)
         if log_dir and not os.path.exists(log_dir):
@@ -54,7 +43,7 @@ def debug_log(message, data=None):
 # ==================== 从 youtube.json 加载分类和过滤器 ====================
 YOUTUBE_CLASSES = [
     {"type_name": "推荐", "type_id": "YouTube 直播 24小時"},   
-    {"type_id": "YouTube 新聞 Live", "type_name": "新闻"},
+    {"type_id": "YouTube 新聞 Live", "type_name": "新闻直播"},
     {"type_id": "劇集", "type_name": "剧集"},
     {"type_id": "電影", "type_name": "电影"},
     {"type_id": "动画片", "type_name": "动画片"},
@@ -1316,322 +1305,6 @@ try:
 except NameError:
     CATEGORY_FILTERS = {}
 
-# ==================== 节点风险 / 健康度管理 ====================
-# 说明: 这里的"节点"指 Innertube 客户端节点(ANDROID_VR / ANDROID / IOS / WEB ...),
-#      与下方 Spider._auto_detect_proxy 里的"代理节点"是两层不同的东西。
-
-# 风险等级: 0=可用, 1=可疑(降权), 2=高风险(冷却), 3=不可用(长冷却)
-RISK_OK, RISK_SUSPECT, RISK_HIGH, RISK_DEAD = 0, 1, 2, 3
-
-# 需要人机校验 / 登录 / 年龄验证等"风险弹窗"类状态
-RISK_STATUS = {
-    'LOGIN_REQUIRED': RISK_HIGH,
-    'AGE_VERIFICATION_REQUIRED': RISK_HIGH,
-    'AGE_CHECK_REQUIRED': RISK_HIGH,
-    'CONTENT_CHECK_REQUIRED': RISK_SUSPECT,
-    'UNPLAYABLE': RISK_SUSPECT,
-    'ERROR': RISK_HIGH,
-    'LIVE_STREAM_OFFLINE': RISK_OK,
-}
-
-# reason 文案里出现这些词 = 触发了 Google 的风控/人机校验
-BOT_REASON_PATTERNS = (
-    'not a bot',
-    'confirm you',
-    'sign in to confirm',
-    '登录以确认',
-    '確認您不是機器人',
-    '确认您不是机器人',
-    'inappropriate for some users',
-    'this helps protect our community',
-)
-
-# 地区/版权类, 换客户端节点没用, 直接判死
-FATAL_REASON_PATTERNS = (
-    'not available in your country',
-    'blocked it in your country',
-    '在您所在的国家',
-    'video is private',
-    'video unavailable',
-    'has been removed',
-    'account associated with this video has been terminated',
-)
-
-
-class NodeHealth:
-    """客户端节点健康表: 记录成功/失败, 高风险节点进入冷却, 排序时降权。"""
-
-    def __init__(self):
-        self.state = {}
-
-    def _slot(self, name):
-        if len(self.state) > 64:
-            self.state.clear()
-        return self.state.setdefault(name, {
-            'ok': 0, 'fail': 0, 'risk': RISK_OK, 'cooldown_until': 0.0, 'last_reason': '',
-        })
-
-    def markOk(self, name):
-        s = self._slot(name)
-        s['ok'] += 1
-        s['risk'] = RISK_OK
-        s['cooldown_until'] = 0.0
-        s['last_reason'] = ''
-
-    def markRisk(self, name, risk, reason=''):
-        s = self._slot(name)
-        s['fail'] += 1
-        s['risk'] = max(s['risk'], risk)
-        s['last_reason'] = str(reason)[:200]
-        # 冷却时长随风险等级递增, 避免反复撞同一个被风控的节点
-        cool = {RISK_OK: 0, RISK_SUSPECT: 60, RISK_HIGH: 600, RISK_DEAD: 1800}.get(risk, 60)
-        if cool:
-            s['cooldown_until'] = time.time() + cool
-
-    def isCooling(self, name):
-        return self._slot(name)['cooldown_until'] > time.time()
-
-    def weight(self, name):
-        """排序权重, 越小越优先。"""
-        s = self._slot(name)
-        base = s['risk'] * 10
-        if self.isCooling(name):
-            base += 100
-        base += min(s['fail'], 9)
-        base -= min(s['ok'], 5)
-        return base
-
-    def snapshot(self):
-        now = time.time()
-        return {k: {'risk': v['risk'], 'ok': v['ok'], 'fail': v['fail'],
-                    'cool': max(0, int(v['cooldown_until'] - now))}
-                for k, v in self.state.items()}
-
-
-# 进程级共享, 跨 extract 调用保留节点健康度
-NODE_HEALTH = NodeHealth()
-
-
-# ==================== 全局 bot-check 熔断 ====================
-# 实测(ytb_debug.log): IP 被标记后, 8 个客户端节点会全部返回 LOGIN_REQUIRED。
-# 此时继续轮询没有任何意义, 只会
-#   a) 让 UI 卡 3~5 秒
-#   b) 短时间内打出十几个请求, 进一步加深 IP 标记
-# 因此一轮全灭后开启熔断, 期间直接短路到兜底。
-BOT_BREAKER = {'until': 0.0, 'hits': 0, 'reason': ''}
-
-
-def breakerOpen():
-    return time.time() < BOT_BREAKER['until']
-
-
-def breakerTrip(seconds, reason=''):
-    BOT_BREAKER['hits'] += 1
-    # 连续命中则指数退避, 上限 30 分钟
-    factor = min(2 ** max(0, BOT_BREAKER['hits'] - 1), 8)
-    BOT_BREAKER['until'] = time.time() + min(seconds * factor, 1800)
-    BOT_BREAKER['reason'] = str(reason)[:200]
-    debug_log('bot breaker tripped', {'hits': BOT_BREAKER['hits'],
-                                      'seconds': int(BOT_BREAKER['until'] - time.time()),
-                                      'reason': BOT_BREAKER['reason'][:80]})
-
-
-def breakerReset():
-    if BOT_BREAKER['hits'] or BOT_BREAKER['until']:
-        debug_log('bot breaker reset')
-    BOT_BREAKER['until'] = 0.0
-    BOT_BREAKER['hits'] = 0
-    BOT_BREAKER['reason'] = ''
-
-
-def breakerRemain():
-    return max(0, int(BOT_BREAKER['until'] - time.time()))
-
-
-# ==================== 登录态 Cookie ====================
-def parseCookieInput(raw_value):
-    """接受三种写法, 统一返回 Cookie 请求头字符串:
-       1) 直接就是 Cookie 头: "SID=...; HSID=...; SAPISID=..."
-       2) dict: {"SID": "...", "SAPISID": "..."}
-       3) Netscape cookies.txt 的多行文本
-    """
-    if not raw_value:
-        return ''
-    if isinstance(raw_value, dict):
-        return '; '.join('%s=%s' % (k, v) for k, v in raw_value.items() if k and v)
-    value = str(raw_value).strip()
-    if '\n' in value or '\t' in value:
-        pairs = []
-        for line in value.splitlines():
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            cols = line.split('\t')
-            if len(cols) >= 7 and cols[5]:
-                pairs.append('%s=%s' % (cols[5], cols[6]))
-        if pairs:
-            return '; '.join(pairs)
-    return value
-
-
-def sapisidHash(cookie_header, origin='https://www.youtube.com'):
-    """Google 内部接口鉴权头。
-    格式: SAPISIDHASH <ts>_<sha1(ts + ' ' + SAPISID + ' ' + origin)>
-    只用本机 Cookie 计算, 不做任何网络请求。
-    """
-    try:
-        jar = {}
-        for part in (cookie_header or '').split(';'):
-            if '=' in part:
-                k, v = part.split('=', 1)
-                jar[k.strip()] = v.strip()
-        sapisid = jar.get('SAPISID') or jar.get('__Secure-3PAPISID') or jar.get('__Secure-1PAPISID')
-        if not sapisid:
-            return None
-        ts = str(int(time.time()))
-        digest = hashlib.sha1(('%s %s %s' % (ts, sapisid, origin)).encode('utf-8')).hexdigest()
-        return 'SAPISIDHASH %s_%s' % (ts, digest)
-    except Exception as e:
-        debug_log('sapisidHash error', repr(e))
-        return None
-
-
-def authHeaders(cookie_header):
-    """有 Cookie 就补齐 Google 需要的一整套认证头。"""
-    headers = {}
-    if not cookie_header:
-        return headers
-    headers['Cookie'] = cookie_header
-    auth = sapisidHash(cookie_header)
-    if auth:
-        headers['Authorization'] = auth
-        headers['X-Origin'] = 'https://www.youtube.com'
-        headers['X-Goog-AuthUser'] = '0'
-    return headers
-
-
-
-# ==================== po_token 远程 provider ====================
-class PoTokenProvider:
-    """对接 bgutil-ytdlp-pot-provider 的 HTTP server。
-
-    协议(见文末引用):
-      GET  {base}/ping      -> 健康检查
-      POST {base}/get_pot   -> {"content_binding": "...", "proxy": "..."}
-                            -> {"po_token": "...", ...}
-    注意: 新版 provider 已弃用 visitor_data / data_sync_id 字段, 必须用 content_binding,
-          否则返回 400。
-
-    设计原则: 全程 fail-soft —— provider 挂了只会拿不到 token, 绝不能拖垮播放或抛异常。
-    """
-
-    def __init__(self, session, config=None):
-        self.session = session
-        self.config = config or {}
-        base = self.config.get('po_token_url') or ''
-        if base and '://' not in base:
-            base = 'http://' + base
-        self.base = base.rstrip('/')
-        self.timeout = float(self.config.get('po_token_timeout') or 6)
-        # provider 的 token 默认按小时算, 这里换成秒
-        self.ttl = int(float(self.config.get('po_token_ttl') or 6) * 3600)
-        self.cache = {}
-        self.cooldown_until = 0.0
-        self.enabled = bool(self.base)
-
-    def _cool(self, seconds=180):
-        self.cooldown_until = time.time() + seconds
-
-    def available(self):
-        return self.enabled and time.time() >= self.cooldown_until
-
-    def ping(self):
-        if not self.available():
-            return False
-        try:
-            r = self.session.get(self.base + '/ping', timeout=self.timeout)
-            ok = r.status_code == 200
-            if not ok:
-                self._cool()
-            return ok
-        except Exception as e:
-            debug_log('pot ping failed', repr(e))
-            self._cool()
-            return False
-
-    def get(self, content_binding, proxy=None):
-        """按 content_binding 取 token, 带本地 TTL 缓存。失败返回 None。"""
-        if not self.available() or not content_binding:
-            return None
-        now = time.time()
-        hit = self.cache.get(content_binding)
-        if hit and hit.get('expires', 0) > now:
-            return hit.get('token')
-        payload = {'content_binding': str(content_binding)}
-        if proxy:
-            payload['proxy'] = proxy if '://' in str(proxy) else 'http://' + str(proxy)
-        try:
-            r = self.session.post(self.base + '/get_pot', json=payload, timeout=self.timeout)
-            if r.status_code >= 400:
-                debug_log('pot http error', {'status': r.status_code, 'body': r.text[:200]})
-                # 400 = 用了被弃用字段; 5xx = 生成失败。都冷却一段时间
-                self._cool(300 if r.status_code >= 500 else 600)
-                return None
-            data = r.json() or {}
-            token = data.get('po_token') or data.get('poToken') or data.get('token')
-            if not token:
-                debug_log('pot empty token', {'keys': list(data.keys())[:8]})
-                self._cool()
-                return None
-            # 缓存封顶, 防止长跑内存膨胀
-            if len(self.cache) > 128:
-                self.cache.clear()
-            self.cache[content_binding] = {'token': token, 'expires': now + self.ttl}
-            debug_log('pot ok', {'binding': str(content_binding)[:24], 'len': len(token)})
-            return token
-        except Exception as e:
-            debug_log('pot request error', repr(e))
-            self._cool()
-            return None
-
-
-def capCache(store, limit):
-    """字典缓存封顶: 超过上限直接清空(比 LRU 简单, 且不会在弱设备上抖动)。"""
-    try:
-        if isinstance(store, dict) and len(store) > limit:
-            store.clear()
-    except Exception:
-        pass
-
-
-
-def classifyPlayability(status, reason):
-    """把 playabilityStatus 归类成 (风险等级, 类别)。"""
-    text_reason = (str(reason or '')).lower()
-    for pat in FATAL_REASON_PATTERNS:
-        if pat.lower() in text_reason:
-            return RISK_DEAD, 'FATAL'
-    for pat in BOT_REASON_PATTERNS:
-        if pat.lower() in text_reason:
-            return RISK_HIGH, 'BOT_CHECK'
-    if status in RISK_STATUS:
-        return RISK_STATUS[status], status
-    if status and status != 'OK':
-        return RISK_SUSPECT, status
-    return RISK_OK, 'OK'
-
-
-class RiskBlocked(Exception):
-    """所有客户端节点都被风控拦截时抛出, 携带结构化信息供上层兜底。"""
-
-    def __init__(self, video_id, category, reason, nodes=None):
-        self.video_id = video_id
-        self.category = category
-        self.reason = reason
-        self.nodes = nodes or {}
-        super().__init__('[%s] %s' % (category, reason))
-
-
 # ==================== 核心提取类（合并优化） ====================
 class YouTubeLite:
     """普通视频提取，合并 0712 优化：快速 API、编码优先级、SDR/HDR 识别"""
@@ -1643,38 +1316,14 @@ class YouTubeLite:
         self.extract_cache = {}
         self.sig_plan_cache = {}
         self.extract_cache_ttl = int(self.config.get('extract_cache_ttl') or 300)
-        # ---- 节点风险 / 探测开关 (均可由 ext 覆盖) ----
-        self.node_health = NODE_HEALTH
-        # probe=0 关闭播放前探测(最快); 1=仅 best 探测; 2=全部探测
-        self.probe_level = int(self.config.get('probe', 1) or 0)
-        self.probe_timeout = float(self.config.get('probe_timeout') or 4)
-        self.probe_max = int(self.config.get('probe_max') or 3)
-        # 允许 av01 / 无 contentLength 等高风险码流(默认不允许)
-        self.allow_risky = bool(self.config.get('allow_risky'))
-        self.last_block = None
-        self.visitor_data = None
-        self.pot = PoTokenProvider(session, self.config)
-        # 缓存上限(条), 防止长时间运行 OOM 导致闪退
-        self.cache_limit = int(self.config.get('cache_limit') or 64)
-        self._current_video_id = None
-        self.cookie_header = parseCookieInput(self.config.get('cookie'))
 
-    def extract(self, url_or_id, force=False):
+    def extract(self, url_or_id):
         video_id = self.extract_video_id(url_or_id)
         cached = self.extract_cache.get(video_id)
         now = time.time()
-        if force:
-            self.extract_cache.pop(video_id, None)
-            cached = None
         if cached and cached.get('expires', 0) > now:
             debug_log('extract cache hit', {'video_id': video_id, 'ttl': int(cached.get('expires', 0) - now)})
             return cached.get('data')
-        # 熔断期间直接短路, 一个网络请求都不发
-        if breakerOpen() and not self.config.get('ignore_breaker'):
-            debug_log('extract short-circuit by breaker', {'video_id': video_id, 'remain': breakerRemain()})
-            raise RiskBlocked(video_id, 'BOT_CHECK',
-                              BOT_BREAKER['reason'] or '触发人机校验, 冷却中',
-                              self.node_health.snapshot())
         watch_url = f"https://www.youtube.com/watch?v={video_id}"
         debug_log('extract start', {'input': url_or_id, 'video_id': video_id})
         page_resp = self._get(watch_url)
@@ -1685,13 +1334,7 @@ class YouTubeLite:
         player_url = self._extract_player_url(page)
         api_key = ytcfg.get('INNERTUBE_API_KEY') or self._search(r'"INNERTUBE_API_KEY":"([^"]+)"', page)
         visitor_data = self._extract_visitor_data(ytcfg, player_response)
-        self.visitor_data = visitor_data
-        self._current_video_id = video_id
-        # 原代码这里恒为 None, 导致 _extract_signature_timestamp 是死代码,
-        # WEB / MWEB 节点缺 signatureTimestamp 时签名会失效。
         sts = None
-        if player_url and self.config.get('sts', True) is not False:
-            sts = self._extract_signature_timestamp(video_id, player_url, ytcfg)
         debug_log('page parsed', {'has_ytcfg': bool(ytcfg), 'has_initial_pr': bool(player_response), 'initial_status': (player_response.get('playabilityStatus') or {}).get('status'), 'initial_has_streaming': bool(player_response.get('streamingData')), 'has_api_key': bool(api_key), 'has_visitor': bool(visitor_data), 'sts': sts, 'player_url': player_url})
         context = ytcfg.get('INNERTUBE_CONTEXT') or {
             'client': {'clientName': 'WEB', 'clientVersion': '2.20240310.01.00', 'hl': 'en', 'gl': 'US'}
@@ -1708,11 +1351,7 @@ class YouTubeLite:
         streaming = player_response.get('streamingData') or {}
         if status and status not in ('OK', 'LIVE_STREAM_OFFLINE') and not streaming:
             reason = (player_response.get('playabilityStatus') or {}).get('reason') or status
-            risk, category = classifyPlayability(status, reason)
-            debug_log('extract blocked', {'video_id': video_id, 'status': status,
-                                          'category': category, 'reason': str(reason)[:160],
-                                          'health': self.node_health.snapshot()})
-            raise RiskBlocked(video_id, category, reason, self.node_health.snapshot())
+            raise Exception(f'YouTube 不可播放: {reason}')
         details = player_response.get('videoDetails') or {}
         raw_formats = []
         seen_raw = set()
@@ -1740,20 +1379,13 @@ class YouTubeLite:
                 formats.append(item)
         debug_log('normalized formats', {'count': len(formats), 'cipher_count': cipher_count, 'progressive': len([x for x in formats if x.get('vcodec') != 'none' and x.get('acodec') != 'none'])})
         if not formats:
-            raise RiskBlocked(video_id, 'NO_FORMAT', '所有客户端节点均未产出可用码流',
-                              self.node_health.snapshot())
+            raise Exception('未获取到可用播放地址')
         data = {
             'id': video_id,
             'title': details.get('title') or video_id,
             'duration': int(details.get('lengthSeconds') or 0),
             'formats': formats,
-            # 点播也可能带 HLS, 作为最后的兜底播放地址
-            'hls_url': streaming.get('hlsManifestUrl') or '',
         }
-        breakerReset()   # 拿到码流 = IP 目前没被拦, 复位熔断
-        capCache(self.extract_cache, self.cache_limit)
-        capCache(self.player_cache, 2)
-        capCache(self.sig_plan_cache, 8)
         self.extract_cache[video_id] = {'data': data, 'expires': time.time() + self.extract_cache_ttl}
         return data
 
@@ -1776,7 +1408,6 @@ class YouTubeLite:
             'ANDROID': 3,
             'IOS': 5,
             'TVHTML5': 7,
-            'TVHTML5_SIMPLY_EMBEDDED_PLAYER': 85,
             'ANDROID_VR': 28,
             'WEB_EMBEDDED_PLAYER': 56,
             'WEB_REMIX': 67,
@@ -1800,31 +1431,12 @@ class YouTubeLite:
             return None
 
     def _get_po_token(self, client_name, context='gvs'):
-        """先用 ext 里写死的静态 token, 没有再走远程 provider。"""
         tokens = self.config.get('po_token') or self.config.get('po_tokens') or {}
-        if isinstance(tokens, str) and tokens:
+        if isinstance(tokens, str):
             return tokens
         if isinstance(tokens, dict):
-            static = tokens.get(f'{client_name}.{context}') or tokens.get(client_name) or tokens.get(context)
-            if static:
-                return static
-        # 远程 provider: gvs 上下文绑定 visitorData, player 上下文绑定 videoId
-        try:
-            if not self.pot.available():
-                return None
-            binding = self.visitor_data if context == 'gvs' else (self._current_video_id or self.visitor_data)
-            if not binding:
-                return None
-            proxy = None
-            try:
-                proxy = (self.session.proxies or {}).get('https') or (self.session.proxies or {}).get('http')
-            except Exception:
-                proxy = None
-            return self.pot.get(binding, proxy)
-        except Exception as e:
-            debug_log('po_token provider error', repr(e))
-            return None
-
+            return tokens.get(f'{client_name}.{context}') or tokens.get(client_name) or tokens.get(context)
+        return None
 
     def _video_codec_priority(self, item):
         mime = (item.get('mimeType') or '').lower()
@@ -1845,51 +1457,9 @@ class YouTubeLite:
         color = item.get('colorInfo') or {}
         return 'vp9.2' in mime or 'vp09.02' in codecs or bool(color.get('hdrMetadataInfo'))
 
-    @staticmethod
-    def url_expired(media_url, slack=60):
-        """YouTube 直链带 expire=<unix秒>, 过期后必然 403 -> 表现为"无法播放"。"""
-        try:
-            q = parse_qs(urlparse(media_url or '').query)
-            exp = int((q.get('expire') or ['0'])[0])
-            return bool(exp) and (time.time() + slack) >= exp
-        except Exception:
-            return False
-
-    # ---------- 码流(节点产物)风险评分 ----------
-    # 分值越高越容易 403 / 解码失败 / 卡顿, 排序时降权
-    def _format_risk(self, item):
-        score = 0
-        codecs = (item.get('codecs') or '').lower()
-        client = (item.get('client') or '').upper()
-        url = item.get('url') or ''
-        # 1) AV1: 大量电视盒子无硬解, 软解直接卡死
-        if 'av01' in codecs:
-            score += 4
-        # 2) WEB / MWEB 节点直链普遍需要 po_token, 无 pot 极易 403
-        if client in ('WEB', 'MWEB', 'WEB_EMBEDDED_PLAYER') and 'pot=' not in url:
-            score += 5
-        # 3) 缺 contentLength 的分片流在 DASH 组装时容易失败
-        if not item.get('contentLength'):
-            score += 2
-        # 4) n 参数未解密成功(仍是密文)会被服务端限速到几十 KB/s
-        if 'n=' in url and item.get('_nsig_failed'):
-            score += 3
-        # 5) HDR(VP9.2) 在 SDR 设备上偏色/黑屏
-        if self._is_hdr_video(item):
-            score += 1
-        # 5.5) 直链已过期 -> 必 403
-        if self.url_expired(url):
-            score += 9
-        # 6) 超高码率 4K 在弱网/弱盒子上必然卡
-        if int(item.get('height') or 0) >= 2160 and int(item.get('bitrate') or 0) > 25_000_000:
-            score += 2
-        return score
-
     def _is_risky_best_video(self, item):
-        """兼容旧调用点: 风险分 >= 4 视为高风险。"""
-        if self.allow_risky:
-            return False
-        return self._format_risk(item) >= 4
+        codecs = (item.get('codecs') or '').lower()
+        return 'av01' in codecs
 
     def choose_playable(self, formats, quality=None):
         all_videos = [x for x in formats if x.get('vcodec') != 'none' and x.get('acodec') == 'none']
@@ -1910,79 +1480,22 @@ class YouTubeLite:
             candidates = all_videos
         if not candidates:
             return None
-        # 风险分升序优先, 其次编码优先级/高度/码率降序
         candidates.sort(key=lambda x: (
-            self._format_risk(x),
-            -self._video_codec_priority(x),
-            -int(x.get('height') or 0),
-            -int(x.get('bitrate') or 0),
-        ))
+            self._video_codec_priority(x),
+            int(x.get('height') or 0),
+            int(x.get('bitrate') or 0)
+        ), reverse=True)
         selected = candidates[0]
         debug_log('video selected fast', {
             'quality': quality,
             'itag': selected.get('itag'),
             'height': selected.get('height'),
             'mime': selected.get('mimeType'),
-            'risk': self._format_risk(selected),
             'codec_priority': self._video_codec_priority(selected),
             'candidates': len(candidates),
             'probe_skipped': True,
         })
         return selected
-
-    # ---------- 风险感知的候选队列 ----------
-    def rank_candidates(self, formats, quality=None):
-        videos = [x for x in formats if x.get('vcodec') != 'none' and x.get('acodec') == 'none']
-        if quality == '4k':
-            pool = [x for x in videos if int(x.get('height') or 0) >= 2160]
-        elif quality == '2k':
-            pool = [x for x in videos if 1440 <= int(x.get('height') or 0) < 2160]
-        elif quality == '1080p':
-            pool = [x for x in videos if 1000 <= int(x.get('height') or 0) < 1440]
-        else:
-            pool = videos[:]
-        pool = pool or videos
-        pool.sort(key=lambda x: (
-            self._format_risk(x),
-            -self._video_codec_priority(x),
-            -int(x.get('height') or 0),
-            -int(x.get('bitrate') or 0),
-        ))
-        return pool
-
-    def progressive_fallback(self, formats):
-        """音视频合一的 progressive 流(itag 18/22), 兼容性最好, 用于最后兜底。"""
-        prog = [x for x in formats if x.get('vcodec') != 'none' and x.get('acodec') != 'none']
-        if not prog:
-            return None
-        prog.sort(key=lambda x: (self._format_risk(x), -int(x.get('height') or 0)))
-        return prog[0]
-
-    def pick_playable_with_probe(self, formats, quality=None, force_probe=False):
-        """按风险从低到高逐个轻探测(Range: bytes=0-1), 403/404 就换下一个码流节点。
-
-        probe_level: 0=不探测 1=仅 best/4k 探测 2=全部探测
-        """
-        candidates = self.rank_candidates(formats, quality)
-        if not candidates:
-            return None, []
-        need_probe = force_probe or self.probe_level >= 2 or (self.probe_level == 1 and quality in ('best', '4k'))
-        if not need_probe:
-            return candidates[0], []
-        tried = []
-        for item in candidates[:max(1, self.probe_max)]:
-            ok, code = self._probe_format(item)
-            tried.append({'itag': item.get('itag'), 'client': item.get('client'),
-                          'risk': self._format_risk(item), 'ok': ok, 'code': code})
-            if ok:
-                debug_log('probe picked', {'itag': item.get('itag'), 'tried': tried})
-                return item, tried
-            # 该码流不可用 -> 给产出它的客户端节点记一次风险
-            client = item.get('client')
-            if client:
-                self.node_health.markRisk(client, RISK_SUSPECT, 'probe %s' % code)
-        debug_log('probe all failed', tried)
-        return candidates[0], tried
 
     def choose_video_tracks(self, formats, quality=None):
         videos = [x for x in formats if x.get('vcodec') != 'none' and x.get('acodec') == 'none']
@@ -2036,8 +1549,7 @@ class YouTubeLite:
             headers = self.headers.copy()
             headers.update(item.get('headers') or {})
             headers['Range'] = 'bytes=0-1'
-            r = self.session.get(item.get('url'), headers=headers, stream=True,
-                                 timeout=getattr(self, 'probe_timeout', 4))
+            r = self.session.get(item.get('url'), headers=headers, stream=True, timeout=10)
             if r.url and r.url != item.get('url'):
                 item['url'] = r.url
                 item['redirected'] = True
@@ -2082,50 +1594,18 @@ class YouTubeLite:
         r.raise_for_status()
         return r.json()
 
-    # ---------- 客户端节点注册表 ----------
-    def _client_nodes(self, context):
-        """返回节点列表; risky=该节点产出的直链更容易 403(需 po_token)。"""
-        return [
-            {'name': 'ANDROID_VR', 'risky': False, 'client': {'clientName': 'ANDROID_VR', 'clientVersion': '1.65.10', 'deviceMake': 'Oculus', 'deviceModel': 'Quest 3', 'androidSdkVersion': 32, 'userAgent': 'com.google.android.apps.youtube.vr.oculus/1.65.10 (Linux; U; Android 12L; eureka-user Build/SQ3A.220605.009.A1) gzip', 'osName': 'Android', 'osVersion': '12L', 'hl': 'en', 'gl': 'US'}},
-            {'name': 'ANDROID', 'risky': False, 'client': {'clientName': 'ANDROID', 'clientVersion': '21.02.35', 'androidSdkVersion': 30, 'userAgent': 'com.google.android.youtube/21.02.35 (Linux; U; Android 11) gzip', 'osName': 'Android', 'osVersion': '11', 'hl': 'en', 'gl': 'US'}},
-            {'name': 'IOS', 'risky': False, 'client': {'clientName': 'IOS', 'clientVersion': '21.02.3', 'deviceMake': 'Apple', 'deviceModel': 'iPhone16,2', 'userAgent': 'com.google.ios.youtube/21.02.3 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)', 'osName': 'iPhone', 'osVersion': '18.3.2.22D82', 'hl': 'en', 'gl': 'US'}},
-            {'name': 'TVHTML5', 'risky': False, 'client': {'clientName': 'TVHTML5', 'clientVersion': '7.20250101.00.00', 'userAgent': 'Mozilla/5.0 (PlayStation; PlayStation 4/12.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15', 'hl': 'en', 'gl': 'US'}},
-            {'name': (((context or {}).get('client') or {}).get('clientName') or 'WEB'), 'risky': True, 'raw': context},
-            # TVHTML5_SIMPLY_EMBEDDED_PLAYER 已被 YouTube 下线, 实测固定返回
-            # "YouTube is no longer supported in this application or device.", 故移除。
-            # WEB_EMBEDDED_PLAYER 必须带 thirdParty.embedUrl, 否则返回 "This video is unavailable"。
-            {'name': 'WEB_EMBEDDED_PLAYER', 'risky': True, 'embed': True, 'client': {'clientName': 'WEB_EMBEDDED_PLAYER', 'clientVersion': '1.20260115.01.00', 'userAgent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36', 'hl': 'en', 'gl': 'US'}},
-            {'name': 'MWEB', 'risky': True, 'client': {'clientName': 'MWEB', 'clientVersion': '2.20260115.01.00', 'userAgent': 'Mozilla/5.0 (iPad; CPU OS 16_7_10 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1,gzip(gfe)', 'hl': 'en', 'gl': 'US'}},
-        ]
-
     def _call_player_api(self, video_id, api_key, context, referer, visitor_data=None, sts=None):
-        nodes = self._client_nodes(context)
-        # ext.clients 可指定只用哪些节点(按给定顺序), 例如 ["ANDROID_VR","IOS"]
-        wanted = self.config.get('clients')
-        if isinstance(wanted, str):
-            wanted = [x.strip() for x in wanted.split(',') if x.strip()]
-        if isinstance(wanted, list) and wanted:
-            table = {n['name']: n for n in nodes}
-            nodes = [table[x] for x in wanted if x in table] or nodes
-        # 按健康度排序: 冷却中/高风险的节点自动排到最后, 但不丢弃(全挂时仍可兜底)
-        nodes.sort(key=lambda n: (self.node_health.weight(n['name']), 1 if n.get('risky') else 0))
-        debug_log('node order', {'order': [n['name'] for n in nodes], 'health': self.node_health.snapshot()})
-
+        clients = [
+            {'client': {'clientName': 'ANDROID_VR', 'clientVersion': '1.65.10', 'deviceMake': 'Oculus', 'deviceModel': 'Quest 3', 'androidSdkVersion': 32, 'userAgent': 'com.google.android.apps.youtube.vr.oculus/1.65.10 (Linux; U; Android 12L; eureka-user Build/SQ3A.220605.009.A1) gzip', 'osName': 'Android', 'osVersion': '12L', 'hl': 'en', 'gl': 'US'}},
+            {'client': {'clientName': 'ANDROID', 'clientVersion': '21.02.35', 'androidSdkVersion': 30, 'userAgent': 'com.google.android.youtube/21.02.35 (Linux; U; Android 11) gzip', 'osName': 'Android', 'osVersion': '11', 'hl': 'en', 'gl': 'US'}},
+            {'client': {'clientName': 'IOS', 'clientVersion': '21.02.3', 'deviceMake': 'Apple', 'deviceModel': 'iPhone16,2', 'userAgent': 'com.google.ios.youtube/21.02.3 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)', 'osName': 'iPhone', 'osVersion': '18.3.2.22D82', 'hl': 'en', 'gl': 'US'}},
+            context,
+            {'client': {'clientName': 'MWEB', 'clientVersion': '2.20260115.01.00', 'userAgent': 'Mozilla/5.0 (iPad; CPU OS 16_7_10 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1,gzip(gfe)', 'hl': 'en', 'gl': 'US'}},
+        ]
         results = []
         fallback = None
-        blocked = []          # 被风险拦截的节点
-        fatal = None          # 地区/删除类, 换节点也没用
-
-        for node in nodes:
-            client_name = node['name']
-            ctx = node.get('raw') or {'client': node['client']}
-            if node.get('embed'):
-                ctx = dict(ctx)
-                ctx['thirdParty'] = {'embedUrl': 'https://www.youtube.com/'}
-            client = ctx.get('client') or {}
-            if self.node_health.isCooling(client_name) and results:
-                debug_log('node skipped (cooling)', {'client': client_name})
-                continue
+        for ctx in clients:
+            client_name = (ctx.get('client') or {}).get('clientName')
             try:
                 url = f'https://www.youtube.com/youtubei/v1/player?key={api_key}&prettyPrint=false'
                 payload = {
@@ -2135,10 +1615,7 @@ class YouTubeLite:
                     'contentCheckOk': True,
                     'racyCheckOk': True,
                 }
-                # 有 po_token 就带上, 显著降低 WEB/MWEB 节点被风控的概率
-                po = self._get_po_token(client_name, 'player')
-                if po:
-                    payload['serviceIntegrityDimensions'] = {'poToken': po}
+                client = ctx.get('client') or {}
                 headers = {
                     'Referer': referer,
                     'X-YouTube-Client-Name': str(self._client_name_id(client.get('clientName'))),
@@ -2146,73 +1623,32 @@ class YouTubeLite:
                 }
                 if visitor_data:
                     headers['X-Goog-Visitor-Id'] = visitor_data
-                # 登录态: Cookie + SAPISIDHASH。目前对付 bot check 最有效的手段
-                headers.update(authHeaders(self.cookie_header))
                 client_ua = client.get('userAgent')
                 if client_ua:
                     headers['User-Agent'] = client_ua
-
                 data = self._post_json(url, payload, headers=headers)
-                ps = data.get('playabilityStatus') or {}
-                status = ps.get('status')
-                reason = ps.get('reason') or (((ps.get('errorScreen') or {}).get('playerErrorMessageRenderer') or {}).get('subreason') or {}).get('simpleText') or ''
-                risk, category = classifyPlayability(status, reason)
-
+                status = (data.get('playabilityStatus') or {}).get('status')
                 streaming = data.get('streamingData') or {}
                 formats = streaming.get('formats') or []
                 adaptive = streaming.get('adaptiveFormats') or []
                 direct_video = [x for x in adaptive if (x.get('url') or x.get('signatureCipher') or x.get('cipher')) and str(x.get('mimeType') or '').startswith('video/')]
                 direct_any = [x for x in formats + adaptive if x.get('url') or x.get('signatureCipher') or x.get('cipher')]
                 has_streaming = bool(streaming)
-
-                debug_log('player api client', {'client': client_name, 'status': status, 'risk': risk, 'category': category,
-                                                'has_streaming': has_streaming, 'formats': len(formats),
-                                                'adaptive': len(adaptive), 'direct_any': len(direct_any),
-                                                'direct_video': len(direct_video)})
-
-                if category == 'FATAL':
-                    fatal = fatal or (category, reason or status)
-                    self.node_health.markRisk(client_name, RISK_DEAD, reason)
-                    # 地区/下架类: 换节点无意义, 但仍继续跑完(某些节点 gl 不同可能可用)
-                    blocked.append({'client': client_name, 'status': status, 'category': category, 'reason': reason})
-                    continue
-
-                if not has_streaming and risk >= RISK_SUSPECT:
-                    # 风险拦截: 记账 + 冷却 + 换下一个节点, 不上抛
-                    self.node_health.markRisk(client_name, risk, reason)
-                    blocked.append({'client': client_name, 'status': status, 'category': category, 'reason': reason})
-                    debug_log('node blocked', {'client': client_name, 'category': category, 'reason': reason[:120]})
-                    continue
-
+                debug_log('player api client', {'client': client_name, 'status': status, 'has_streaming': has_streaming, 'formats': len(formats), 'adaptive': len(adaptive), 'direct_any': len(direct_any), 'direct_video': len(direct_video)})
                 if has_streaming:
-                    self.node_health.markOk(client_name)
                     data['_client_name'] = client_name
                     data['_client_ua'] = client_ua
-                    data['_client_risky'] = bool(node.get('risky'))
                     results.append(data)
-                    # 低风险节点直接拿到视频直链 -> 快速返回
-                    if not node.get('risky') and direct_video and status == 'OK':
+                    if client_name == 'ANDROID_VR' and direct_video:
                         debug_log('player api fast return', {'client': client_name, 'direct_video': len(direct_video)})
                         return results
-                    if fallback is None:
-                        fallback = data
+                if has_streaming and fallback is None:
+                    fallback = data
                 elif fallback is None:
                     fallback = data
             except Exception as e:
-                self.node_health.markRisk(client_name, RISK_SUSPECT, repr(e))
                 debug_log('player api client error', {'client': client_name, 'error': repr(e)})
                 continue
-
-        self.last_block = {'blocked': blocked, 'fatal': fatal, 'health': self.node_health.snapshot()}
-        # 一轮下来全灭且主因是人机校验 -> 开熔断, 避免继续空轮询加深 IP 标记
-        if not results and blocked:
-            bot_hits = [b for b in blocked if b.get('category') in ('BOT_CHECK', 'LOGIN_REQUIRED')]
-            if len(bot_hits) >= max(2, len(nodes) // 2):
-                breakerTrip(int(self.config.get('bot_cooldown') or 300),
-                            bot_hits[0].get('reason') or 'BOT_CHECK')
-        if not results and blocked:
-            category, reason = fatal if fatal else (blocked[0].get('category'), blocked[0].get('reason') or blocked[0].get('status'))
-            raise RiskBlocked(video_id, category, reason, self.node_health.snapshot())
         return results or ([fallback] if fallback else [])
 
     def _normalize_format(self, fmt, player_url):
@@ -2223,9 +1659,7 @@ class YouTubeLite:
                 media_url = self._decrypt_signature_cipher(cipher, player_url)
         if not media_url:
             return None
-        before_n = media_url
         media_url = self._decrypt_nsig(media_url, player_url)
-        nsig_failed = ('n=' in media_url) and (media_url == before_n)
         client_name = fmt.get('_client_name')
         po_token = self._get_po_token(client_name, 'gvs') if client_name else None
         if po_token:
@@ -2258,8 +1692,6 @@ class YouTubeLite:
             'vcodec': codecs if has_video else 'none',
             'acodec': codecs if has_audio else 'none',
             'headers': headers,
-            '_nsig_failed': nsig_failed,
-            '_client_risky': bool(fmt.get('_client_risky')),
         }
 
     def _decrypt_signature_cipher(self, cipher, player_url):
@@ -2553,10 +1985,6 @@ class YouTubeLiveLite:
         raise Exception('无法识别 YouTube 视频 ID')
 
     def extract_live(self, url_or_id):
-        if breakerOpen() and not (self.config or {}).get('ignore_breaker'):
-            debug_log('live short-circuit by breaker', {'remain': breakerRemain()})
-            raise RiskBlocked(self.extract_video_id(url_or_id), 'BOT_CHECK',
-                              BOT_BREAKER['reason'] or '触发人机校验, 冷却中')
         video_id = self.extract_video_id(url_or_id)
         now = time.time()
         cached = self.cache.get(video_id)
@@ -2646,16 +2074,12 @@ class YouTubeLiveLite:
         return response.json()
 
     def _call_player_api(self, video_id, api_key, ytcfg, referer, visitor_data=None):
-        # 直播侧原本没有任何风险识别, 这里与点播侧对齐
-        self.node_health = getattr(self, 'node_health', NODE_HEALTH)
-        self.cookie_header = getattr(self, 'cookie_header', None) or parseCookieInput((self.config or {}).get('cookie'))
         context = ytcfg.get('INNERTUBE_CONTEXT') or {
             'client': {'clientName': 'WEB', 'clientVersion': '2.20240310.01.00', 'hl': 'en', 'gl': 'US'}
         }
         clients = [
             {'client': {'clientName': 'ANDROID', 'clientVersion': '21.02.35', 'androidSdkVersion': 30, 'userAgent': 'com.google.android.youtube/21.02.35 (Linux; U; Android 11) gzip', 'osName': 'Android', 'osVersion': '11', 'hl': 'en', 'gl': 'US'}},
             {'client': {'clientName': 'IOS', 'clientVersion': '21.02.3', 'deviceMake': 'Apple', 'deviceModel': 'iPhone16,2', 'userAgent': 'com.google.ios.youtube/21.02.3 (iPhone16,2; U; CPU iOS 18_3_2 like Mac OS X;)', 'osName': 'iPhone', 'osVersion': '18.3.2.22D82', 'hl': 'en', 'gl': 'US'}},
-            {'client': {'clientName': 'TVHTML5', 'clientVersion': '7.20250101.00.00', 'userAgent': 'Mozilla/5.0 (PlayStation; PlayStation 4/12.00) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.0 Safari/605.1.15', 'hl': 'en', 'gl': 'US'}},
             {'client': {'clientName': 'MWEB', 'clientVersion': '2.20260115.01.00', 'userAgent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1', 'hl': 'en', 'gl': 'US'}},
             context,
         ]
@@ -2763,7 +2187,6 @@ class YouTubeLiveLite:
             'ANDROID': 3,
             'IOS': 5,
             'TVHTML5': 7,
-            'TVHTML5_SIMPLY_EMBEDDED_PLAYER': 85,
             'ANDROID_VR': 28,
             'WEB_EMBEDDED_PLAYER': 56,
             'WEB_REMIX': 67,
@@ -2776,38 +2199,6 @@ class Spider(Spider):
         return 'YouTube 视频+直播（优化版）'
 
     def init(self, extend):
-        # init 抛异常 = TVBox 认为源加载失败 -> 反复重载接口
-        try:
-            self._init(extend)
-        except Exception as e:
-            debug_log('init fatal', repr(e))
-            self._init_minimal()
-
-    def _init_minimal(self):
-        """init 失败时的最小可用状态, 保证后续方法不会 AttributeError。"""
-        self.extendDict = getattr(self, 'extendDict', {}) or {}
-        if not hasattr(self, 'session'):
-            self.session = requests.Session()
-        self.proxy_str = getattr(self, 'proxy_str', '')
-        self.yt_classes = getattr(self, 'yt_classes', None) or YOUTUBE_CLASSES
-        self.yt_filters = getattr(self, 'yt_filters', None) or CATEGORY_FILTERS
-        self.header = getattr(self, 'header', None) or {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-            'Referer': 'https://www.youtube.com/',
-        }
-        if not hasattr(self, 'yt_video'):
-            self.yt_video = YouTubeLite(self.session, self.header, self.extendDict)
-        if not hasattr(self, 'yt_live'):
-            self.yt_live = YouTubeLiveLite(self.session, self.header, self.extendDict)
-        for attr in ('search_page_cache', 'live_search_cache', 'hls_url_cache'):
-            if not hasattr(self, attr):
-                setattr(self, attr, {})
-        self.hls_proxy_enabled = getattr(self, 'hls_proxy_enabled', True)
-        self._hls_key_seq = getattr(self, '_hls_key_seq', 0)
-        self.direct_segments = getattr(self, 'direct_segments', False)
-
-    def _init(self, extend):
         try:
             self.extendDict = json.loads(extend) if extend else {}
         except Exception:
@@ -2878,21 +2269,6 @@ class Spider(Spider):
             'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
             'Referer': 'https://www.youtube.com/'
         }
-        # 登录态 Cookie: ext.cookie 直接给字符串/字典, 或 ext.cookie_file 给 cookies.txt 路径
-        cookie_raw = self.extendDict.get('cookie')
-        cookie_file = self.extendDict.get('cookie_file')
-        if not cookie_raw and cookie_file:
-            try:
-                with open(cookie_file, 'r', encoding='utf-8', errors='ignore') as fp:
-                    cookie_raw = fp.read()
-            except Exception as e:
-                debug_log('cookie_file 读取失败', repr(e))
-        self.cookie_header = parseCookieInput(cookie_raw)
-        if self.cookie_header:
-            self.extendDict['cookie'] = self.cookie_header
-            self.header.update(authHeaders(self.cookie_header))
-            debug_log('已启用登录态 Cookie', {'len': len(self.cookie_header),
-                                             'has_sapisid': 'SAPISID' in self.cookie_header})
         self.session.headers.update(self.header)
         
         # 初始化两个提取器
@@ -2904,109 +2280,10 @@ class Spider(Spider):
         self.hls_proxy_enabled = self.extendDict.get('hls_proxy', True) is not False
         self._hls_key_seq = 0
         self.direct_segments = str(self.extendDict.get('seg') or 'proxy').lower() == 'direct'
-        # po_token provider 自检(可选, 失败只记日志不影响启动)
-        if self.extendDict.get('po_token_url') and self.extendDict.get('po_token_ping', True) is not False:
-            debug_log('po_token provider', {'base': self.yt_video.pot.base,
-                                            'alive': self.yt_video.pot.ping()})
         
-    # ---------- 统一兜底: 拦截风险弹窗 / 无法播放 ----------
-    def _risk_message(self, err):
-        if isinstance(err, RiskBlocked):
-            mapping = {
-                'BOT_CHECK': ('触发 YouTube 人机校验(出口 IP 被标记)。'
-                              '按有效性排序: 1) 配 ext.cookie 登录态 2) 换出口 IP/节点 3) po_token'
-                              + (' [冷却 %ds]' % breakerRemain() if breakerRemain() else '')),
-                'LOGIN_REQUIRED': '该视频需要登录账号才能播放',
-                'AGE_VERIFICATION_REQUIRED': '该视频有年龄限制, 需登录验证',
-                'AGE_CHECK_REQUIRED': '该视频有年龄限制, 需登录验证',
-                'FATAL': '该视频已下架/私享/在当前地区不可用',
-                'NO_FORMAT': '未取到可用码流, 请稍后重试或更换代理节点',
-            }
-            return mapping.get(err.category, str(err.reason or err.category))
-        return str(err)
-
-    def _fallback_play_result(self, video_id, err, formats=None, hls_url=''):
-        """降级链: progressive 直链 -> 最低风险码流 -> embed(可关) -> 静默失败。
-
-        目的是尽量不让 TVBox 弹出 WebView 风险窗口。
-        """
-        message = self._risk_message(err)
-        debug_log('fallback play', {'video_id': video_id, 'msg': message,
-                                    'breaker_remain': breakerRemain(),
-                                    'cookie': bool(getattr(self, 'cookie_header', ''))})
-
-        # 0) 点播 HLS(hlsManifestUrl): 单地址、自适应, 盒子兼容性最好
-        try:
-            if hls_url:
-                play_url = self._cache_hls_url(hls_url, video_id, 'master') if self.hls_proxy_enabled else hls_url
-                debug_log('fallback -> hls')
-                return {'parse': 0, 'jx': 0, 'url': play_url, 'header': self.header,
-                        'format': 'application/x-mpegURL'}
-        except Exception as e:
-            debug_log('fallback hls error', repr(e))
-
-        # 1) progressive(音视频合一)直链, 兼容性最好
-        try:
-            if formats:
-                prog = self.yt_video.progressive_fallback(formats)
-                if prog and prog.get('url'):
-                    headers = self.header.copy()
-                    headers.update(prog.get('headers') or {})
-                    debug_log('fallback -> progressive', {'itag': prog.get('itag')})
-                    return {'parse': 0, 'jx': 0, 'url': prog['url'], 'header': headers}
-        except Exception as e:
-            debug_log('fallback progressive error', repr(e))
-
-        # 2) 风险最低的纯视频码流(无音轨也好过黑屏)
-        try:
-            if formats:
-                ranked = self.yt_video.rank_candidates(formats, '1080p')
-                if ranked and ranked[0].get('url'):
-                    headers = self.header.copy()
-                    headers.update(ranked[0].get('headers') or {})
-                    debug_log('fallback -> lowest risk video', {'itag': ranked[0].get('itag')})
-                    return {'parse': 0, 'jx': 0, 'url': ranked[0]['url'], 'header': headers}
-        except Exception as e:
-            debug_log('fallback lowrisk error', repr(e))
-
-        # 3) embed(会弹 WebView), 默认开启; ext 里 embed_fallback=false 可彻底关闭弹窗
-        if self.extendDict.get('embed_fallback', True) is not False:
-            fatal = isinstance(err, RiskBlocked) and err.category == 'FATAL'
-            if not fatal:
-                return {'parse': 1, 'jx': 1,
-                        'url': f'https://www.youtube.com/embed/{video_id}?autoplay=1',
-                        'header': json.dumps(self.header)}
-
-        # 4) 完全不弹窗: 返回空 url, 播放器直接提示失败
-        return {'parse': 0, 'jx': 0, 'url': '', 'msg': message}
-
-    # 进程级缓存: 避免每次 init 都重新探测
-    _PROXY_CACHE = {'proxy': None, 'expires': 0.0}
-    _PROXY_BLACKLIST = {}
-
     def _auto_detect_proxy(self):
-        """代理节点探测。
-
-        用裸 TCP connect 代替 HTTP 请求:
-          - 本机端口没开时 connect 立刻 ECONNREFUSED, 12 个端口串行也在 50ms 内跑完
-          - 不需要线程, 避免 Android Python 沙箱里线程残留导致的闪退
-        """
-        now = time.time()
-        cache = Spider._PROXY_CACHE
-        ttl = int(self.extendDict.get('proxy_cache_ttl') or 300)
-
-        if cache.get('expires', 0) > now:
-            cached = cache.get('proxy')
-            if cached:
-                self.session.proxies = {'http': cached, 'https': cached}
-                self.proxy_str = cached.replace('http://', '').replace('https://', '')
-            else:
-                self.session.proxies = {}
-                self.proxy_str = ''
-            debug_log('代理节点缓存命中', {'proxy': cached})
-            return
-
-        proxy_list = self.extendDict.get('proxy_list') or [
+        """代理逻辑 2 & 3：探测内置列表，若都不行则清空，回退使用系统/全局代理"""
+        proxy_list = [
             "http://127.0.0.1:2080",
             "http://127.0.0.1:7890",
             "http://127.0.0.1:10809",
@@ -3018,73 +2295,29 @@ class Spider(Spider):
             "http://127.0.0.1:3128",
             "http://127.0.0.1:1080",
             "http://127.0.0.1:8080",
-            "http://127.0.0.1:9090",
+            "http://127.0.0.1:9090"
         ]
-        candidates = [p for p in proxy_list if Spider._PROXY_BLACKLIST.get(p, 0) < now] or proxy_list
-        connect_timeout = float(self.extendDict.get('proxy_timeout') or 0.35)
-
-        picked = None
-        for p in candidates:
+        
+        # 第二级：探测内置列表
+        for p in proxy_list:
             try:
-                parsed = urlparse(p if '://' in p else 'http://' + p)
-                host = parsed.hostname or '127.0.0.1'
-                port = parsed.port or 80
-                sock = socket.create_connection((host, port), timeout=connect_timeout)
-                sock.close()
-                picked = p
-                break
+                test_proxies = {'http': p, 'https': p}
+                # 设置较短超时时间，快速失败
+                r = requests.get('https://www.youtube.com', proxies=test_proxies, timeout=2)
+                if r.status_code < 400:
+                    self.session.proxies = test_proxies
+                    self.proxy_str = p.replace('http://', '').replace('https://', '')
+                    debug_log('内置代理探测成功，使用内置', {'proxy': p})
+                    return
             except Exception:
-                Spider._PROXY_BLACKLIST[p] = now + 300
                 continue
-
-        # 黑名单封顶, 防止长期运行后无限增长
-        if len(Spider._PROXY_BLACKLIST) > 64:
-            Spider._PROXY_BLACKLIST.clear()
-
-        if picked:
-            self.session.proxies = {'http': picked, 'https': picked}
-            self.proxy_str = picked.replace('http://', '').replace('https://', '')
-            Spider._PROXY_CACHE = {'proxy': picked, 'expires': now + ttl}
-            debug_log('代理节点探测成功', {'proxy': picked, 'tried': len(candidates)})
-            return
-
+                
+        # 第三级：如果所有预设都失败，清空 proxies 字典，回退到全局/系统代理
         self.session.proxies = {}
         self.proxy_str = ''
-        Spider._PROXY_CACHE = {'proxy': None, 'expires': now + min(ttl, 60)}
-        debug_log('无可用代理节点, 回退系统/全局代理')
+        debug_log('所有内置代理均不可用，清空设置，回退使用系统/全局代理')
 
-    # ---------- 对外方法防崩护栏 ----------
-    # catvod / TVBox 二开在这些方法抛异常时, 轻则重载接口, 重则闪退
     def homeContent(self, filter):
-        try:
-            return self._homeContent(filter)
-        except Exception as e:
-            debug_log('homeContent error', repr(e))
-            return {'class': getattr(self, 'yt_classes', []) or []}
-
-    def categoryContent(self, cid, page, filter, ext):
-        try:
-            return self._categoryContent(cid, page, filter, ext)
-        except Exception as e:
-            debug_log('categoryContent error', repr(e))
-            return {'list': [], 'page': int(page or 1), 'pagecount': int(page or 1),
-                    'limit': 30, 'total': 0}
-
-    def searchContent(self, key, quick, pg=1):
-        try:
-            return self._searchContent(key, quick, pg)
-        except Exception as e:
-            debug_log('searchContent error', repr(e))
-            return {'list': [], 'page': int(pg or 1)}
-
-    def detailContent(self, did):
-        try:
-            return self._detailContent(did)
-        except Exception as e:
-            debug_log('detailContent error', repr(e))
-            return {'list': []}
-
-    def _homeContent(self, filter):
         result = {'class': self.yt_classes}
         if filter:
             video_filters = {}
@@ -3098,7 +2331,7 @@ class Spider(Spider):
     def homeVideoContent(self):
         return {'list': []}
 
-    def _categoryContent(self, cid, page, filter, ext):
+    def categoryContent(self, cid, page, filter, ext):
         page = int(page or 1)
         filters = ext if isinstance(ext, dict) else {}
         if self._is_live_category(cid):
@@ -3115,7 +2348,7 @@ class Spider(Spider):
             'total': len(videos)
         }
 
-    def _searchContent(self, key, quick, pg=1):
+    def searchContent(self, key, quick, pg=1):
         page = int(pg or 1)
         keyword = str(key or '').strip()
         videos_v, _ = self._search_video_page(keyword, page)
@@ -3189,7 +2422,7 @@ class Spider(Spider):
             return []
 
     # ---------- detailContent（方案A：按高度分 SDR/HDR） ----------
-    def _detailContent(self, did):
+    def detailContent(self, did):
         video_id = did[0]
         # 检测是否为直播
         try:
@@ -3296,19 +2529,7 @@ class Spider(Spider):
 
     # ---------- playerContent ----------
     def playerContent(self, flag, pid, vipFlags):
-        # catvod / 影视仓在这里拿到异常会直接重载接口甚至闪退, 因此整体兜住
-        try:
-            return self._playerContent(flag, pid, vipFlags)
-        except Exception as e:
-            debug_log('playerContent fatal', repr(e))
-            try:
-                vid = str(pid).split('$')[-1].split('@')[0]
-            except Exception:
-                vid = ''
-            return self._fallback_play_result(vid, e, None)
-
-    def _playerContent(self, flag, pid, vipFlags):
-        raw_pid = str(pid or '').split('$')[-1]
+        raw_pid = pid.split('$')[-1]
         if '@' in raw_pid:
             video_id, quality_or_type = raw_pid.rsplit('@', 1)
         else:
@@ -3340,7 +2561,6 @@ class Spider(Spider):
 
     # ---------- 按高度和 SDR/HDR 类型播放点播 ----------
     def _play_video_by_height_and_type(self, video_id, target_height, hdr_type):
-        formats = None
         try:
             data = self.yt_video.extract(video_id)
             formats = data.get('formats', [])
@@ -3383,7 +2603,7 @@ class Spider(Spider):
                 return {'parse': 0, 'jx': 0, 'url': selected_video['url'], 'header': headers}
         except Exception as e:
             debug_log('_play_video_by_height_and_type error', {'video_id': video_id, 'height': target_height, 'type': hdr_type, 'error': repr(e)})
-            return self._fallback_play_result(video_id, e, formats)
+            return {'parse': 1, 'url': f'https://www.youtube.com/embed/{video_id}?autoplay=1', 'header': json.dumps(self.header)}
 
 
     def _play_live_by_height(self, video_id, target_height):
@@ -3449,17 +2669,10 @@ class Spider(Spider):
             return ' '.join([self._normalize_filter_term(item) for item in value.values() if item])
         return re.sub(r'\s+', ' ', str(value or '')).strip()[:180]
 
-    def _cap_spider_caches(self):
-        limit = int(self.extendDict.get('cache_limit') or 64)
-        capCache(self.search_page_cache, limit)
-        capCache(self.live_search_cache, limit)
-        capCache(self.hls_url_cache, limit * 4)
-
     def _search_cache_key(self, key):
         return re.sub(r'\s+', ' ', str(key or '')).strip().lower()
 
     def _search_video_page(self, key, page=1):
-        self._cap_spider_caches()
         page = max(1, int(page or 1))
         cache_key = self._search_cache_key(key)
         session = self.search_page_cache.get(cache_key)
@@ -3554,9 +2767,7 @@ class Spider(Spider):
 
     def _extract_continuation_token(self, data):
         tokens = []
-        def scan(obj, _depth=0):
-            if _depth > 40:
-                return
+        def scan(obj):
             if isinstance(obj, dict):
                 endpoint = obj.get('continuationEndpoint') or {}
                 token = endpoint.get('continuationCommand', {}).get('token')
@@ -3577,9 +2788,7 @@ class Spider(Spider):
     def _extract_videos_from_api(self, data, limit=30):
         videos = []
         seen = set()
-        def scan(obj, _depth=0):
-            if _depth > 40:
-                return
+        def scan(obj):
             if len(videos) >= limit:
                 return
             if isinstance(obj, dict):
@@ -3600,9 +2809,7 @@ class Spider(Spider):
     def _extract_live_videos_from_api(self, data, limit=30):
         videos = []
         seen = set()
-        def scan(obj, _depth=0):
-            if _depth > 40:
-                return
+        def scan(obj):
             if len(videos) >= limit:
                 return
             if isinstance(obj, dict):
@@ -3692,29 +2899,12 @@ class Spider(Spider):
             }
         except Exception as e:
             debug_log('_play_live error', {'video_id': video_id, 'error': repr(e)})
-            return self._fallback_play_result(video_id, e, None)
+            return {'parse': 1, 'jx': 1, 'url': f'https://www.youtube.com/embed/{video_id}?autoplay=1'}
 
     def _play_video(self, video_id, quality):
-        formats = None
         try:
             data = self.yt_video.extract(video_id)
-            formats = data.get('formats') or []
-            # 命中缓存但直链已过期 -> 强制重取一次, 这是"点了没反应/无法播放"的高频原因
-            if formats and self.yt_video.url_expired(formats[0].get('url')):
-                debug_log('cached url expired, re-extract', {'video_id': video_id})
-                data = self.yt_video.extract(video_id, force=True)
-                formats = data.get('formats') or []
-            playable, probe_log = self.yt_video.pick_playable_with_probe(formats, quality)
-            if probe_log and not any(x.get('ok') for x in probe_log):
-                # 全部探测失败 -> 换一批节点重取
-                debug_log('all probe failed, re-extract', {'video_id': video_id})
-                data = self.yt_video.extract(video_id, force=True)
-                formats = data.get('formats') or []
-                playable, probe_log = self.yt_video.pick_playable_with_probe(formats, quality)
-            if probe_log:
-                debug_log('probe log', probe_log)
-            if not playable:
-                playable = self.yt_video.choose_playable(formats, quality)
+            playable = self.yt_video.choose_playable(data['formats'], quality)
             if playable:
                 audio = self.yt_video.choose_audio(data['formats'])
                 debug_log('selected playable', {'itag': playable.get('itag'), 'client': playable.get('client'), 'mime': playable.get('mimeType'), 'height': playable.get('height'), 'has_n': 'n=' in playable.get('url', ''), 'redirected': bool(playable.get('redirected')), 'ua': (playable.get('headers') or {}).get('User-Agent', '')[:60], 'url_len': len(playable.get('url', ''))})
@@ -3737,12 +2927,7 @@ class Spider(Spider):
             raise Exception(f'没有可直接播放的 {quality} 视频流格式')
         except Exception as e:
             debug_log('_play_video error', repr(e))
-            hls = ''
-            try:
-                hls = ((self.yt_video.extract_cache.get(video_id) or {}).get('data') or {}).get('hls_url') or ''
-            except Exception:
-                hls = ''
-            return self._fallback_play_result(video_id, e, formats, hls)
+            return {'parse': 1, 'url': f'https://www.youtube.com/embed/{video_id}?autoplay=1', 'header': json.dumps(self.header)}
 
     # ------------------ HLS 代理（原 youtubelive） ------------------
     def _probe_hls(self, video_id, hls_url):
@@ -4037,25 +3222,6 @@ class Spider(Spider):
             return [500, 'text/plain', f'HLS 代理失败: {str(e)}']
 
     def destroy(self):
-        # 释放引用, 减少反复重载接口时的内存堆积
-        try:
-            for store in (getattr(self, 'search_page_cache', None),
-                          getattr(self, 'live_search_cache', None),
-                          getattr(self, 'hls_url_cache', None)):
-                if isinstance(store, dict):
-                    store.clear()
-            yv = getattr(self, 'yt_video', None)
-            if yv:
-                for name in ('extract_cache', 'player_cache', 'sig_plan_cache'):
-                    store = getattr(yv, name, None)
-                    if isinstance(store, dict):
-                        store.clear()
-            sess = getattr(self, 'session', None)
-            if sess:
-                sess.close()
-        except Exception as e:
-            debug_log('destroy error', repr(e))
-
         try:
             self.session.close()
         except Exception:
